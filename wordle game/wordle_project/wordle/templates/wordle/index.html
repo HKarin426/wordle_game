@@ -2,6 +2,51 @@
 <html>
 <head>
     <title>Wordle Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 50px;
+        }
+        h1 {
+            color: #333;
+        }
+        p {
+            font-size: 18px;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        input[type="text"] {
+            padding: 10px;
+            font-size: 18px;
+            width: 200px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 18px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .feedback {
+            font-size: 20px;
+            margin-top: 20px;
+        }
+        .explanation {
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        .guess-list {
+            margin-top: 20px;
+        }
+        .guess-item {
+            font-size: 18px;
+        }
+    </style>
 </head>
 <body>
     <h1>Wordle Game</h1>
@@ -10,8 +55,22 @@
     <form method="post">
         {% csrf_token %}
         <input type="text" name="guess" maxlength="5" required>
-        <button type="submit">Guess</button>
+        <button type="submit" name="submit">Guess</button>
     </form>
-    <p>{{ message }}</p>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" name="reset">Reset Game</button>
+    </form>
+    <div class="explanation">
+        <p>🟢 : 위치와 문자가 모두 일치</p>
+        <p>🟡 : 문자는 일치하나 위치가 다름</p>
+        <p>🔴 : 문자가 일치하지 않음</p>
+    </div>
+    <div class="guess-list">
+        {% for guess in guesses %}
+            <p class="guess-item">{{ guess.guess }}: {{ guess.feedback }}</p>
+        {% endfor %}
+    </div>
+    <p class="feedback">{{ message }}</p>
 </body>
 </html>
