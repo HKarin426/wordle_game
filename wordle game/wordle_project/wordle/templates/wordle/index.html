@@ -47,11 +47,6 @@
         <input type="text" name="guess" maxlength="5" required>
         <button type="submit">Guess</button>
     </form>
-    <div>
-        {% for guess, feedback in guesses %}
-            <p>{{ guess }}: {{ feedback }}</p>
-        {% endfor %}
-    </div>
     <p class="feedback">{{ message }}</p>
 </body>
 </html>
