@@ -3,7 +3,7 @@ import string
 from django.shortcuts import render
 
 # 1. 단어 리스트 준비
-word_list = ["apple", "grape", "berry", "melon", "lemon", "mango"]
+word_list = ["apple", "grape", "berry", "melon", "lemon", "mango","watch","crane", "blush", "flint", "glove", "jumpy", "knack", "plumb", "quash", "sword", "zesty"]
 
 # 남은 알파벳 초기화
 remaining_letters = list(string.ascii_lowercase)
@@ -33,11 +33,11 @@ def index(request):
             feedback = []
             for i in range(5):
                 if guess[i] == answer[i]:
-                    feedback.append('G')  # G는 Green: 위치와 문자가 모두 일치
+                    feedback.append('🟢')  # 🟢: 위치와 문자가 모두 일치
                 elif guess[i] in answer:
-                    feedback.append('Y')  # Y는 Yellow: 문자는 일치하나 위치가 다름
+                    feedback.append('🟡')  # 🟡: 문자는 일치하나 위치가 다름
                 else:
-                    feedback.append('B')  # B는 Black: 문자가 일치하지 않음
+                    feedback.append('🔴')  # 🔴: 문자가 일치하지 않음
 
             # 사용된 문자를 남은 알파벳에서 제거
             for letter in guess:
