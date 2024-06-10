@@ -2,6 +2,41 @@
 <html>
 <head>
     <title>Wordle Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 50px;
+        }
+        h1 {
+            color: #333;
+        }
+        p {
+            font-size: 18px;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        input[type="text"] {
+            padding: 10px;
+            font-size: 18px;
+            width: 200px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 18px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .feedback {
+            font-size: 20px;
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
     <h1>Wordle Game</h1>
@@ -12,6 +47,15 @@
         <input type="text" name="guess" maxlength="5" required>
         <button type="submit">Guess</button>
     </form>
-    <p>{{ message }}</p>
+    <form method="post" action="{% url 'reset' %}">
+        {% csrf_token %}
+        <button type="submit">Reset Game</button>
+    </form>
+    <div>
+        {% for guess in guesses %}
+            <p>{{ guess.guess }}: {{ guess.feedback }}</p>
+        {% endfor %}
+    </div>
+    <p class="feedback">{{ message }}</p>
 </body>
 </html>
