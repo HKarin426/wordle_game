@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Wordle Game</title>
+</head>
+<body>
+    <h1>Wordle Game</h1>
+    <p>Remaining letters: {{ remaining_letters }}</p>
+    <p>Attempts left: {{ attempts }}</p>
+    <form method="post">
+        {% csrf_token %}
+        <input type="text" name="guess" maxlength="5" required>
+        <button type="submit">Guess</button>
+    </form>
+    <p>{{ message }}</p>
+</body>
+</html>
