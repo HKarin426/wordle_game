@@ -2,6 +2,7 @@ import random
 import string
 import requests
 from django.shortcuts import render
+from django.urls import reverse
 
 # 1. 단어 리스트 준비
 word_list = ["apple", "grape", "berry", "melon", "lemon", "mango","watch","crane", "blush", "flint", "glove", "jumpy", "knack", "plumb", "quash", "sword", "zesty"]
@@ -88,3 +89,11 @@ def index(request):
         'attempts': attempts,
         'guesses': guesses,
     })
+
+def reset_game(request):
+    global remaining_letters, answer, attempts, guesses
+    remaining_letters = list(string.ascii_lowercase)
+    answer = random.choice(word_list)
+    attempts = 6
+    guesses = []
+    return redirect(reverse('index'))  # 'index'는 URL name입니다.

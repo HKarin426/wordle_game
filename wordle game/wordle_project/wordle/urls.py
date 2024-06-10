@@ -1,6 +1,7 @@
 from django.urls import path
-from . import views
+from .views import index, reset_game
 
 urlpatterns = [
-    path('', views.index, name='index'),
+    path('', index, name='index'),
+    path('reset/', reset_game, name='reset'),  # 리셋 기능을 위한 URL
 ]
