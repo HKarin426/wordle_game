@@ -1,5 +1,3 @@
-pip install request
-
 import random
 import string
 import requests
