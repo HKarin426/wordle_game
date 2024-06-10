@@ -10,6 +10,7 @@ word_list = ["apple", "grape", "berry", "melon", "lemon", "mango","watch","crane
 remaining_letters = list(string.ascii_lowercase)
 answer = random.choice(word_list)
 attempts = 6
+guesses = []
 
 def is_valid_word(word):
     api_url = f"https://api.dictionaryapi.dev/api/v2/entries/en/{word}"
@@ -17,7 +18,7 @@ def is_valid_word(word):
     return response.status_code == 200
 
 def index(request):
-    global remaining_letters, answer, attempts
+    global remaining_letters, answer, attempts, guesses
 
     if request.method == 'POST':
         guess = request.POST['guess'].lower()
@@ -27,6 +28,7 @@ def index(request):
                 'message': 'Please enter a 5-letter word.',
                 'remaining_letters': ''.join(remaining_letters),
                 'attempts': attempts,
+                'guesses': guesses,
             })
 
         if not is_valid_word(guess):
@@ -34,13 +36,16 @@ def index(request):
                 'message': 'This is not a valid word.',
                 'remaining_letters': ''.join(remaining_letters),
                 'attempts': attempts,
+                'guesses': guesses,
             })
 
         if guess == answer:
+            guesses.append({'guess': guess, 'feedback': '🟢🟢🟢🟢🟢'})
             return render(request, 'wordle/index.html', {
                 'message': f'Congratulations! You\'ve guessed the word correctly: {guess}',
                 'remaining_letters': ''.join(remaining_letters),
                 'attempts': attempts,
+                'guesses': guesses,
             })
         else:
             feedback = []
@@ -61,21 +66,25 @@ def index(request):
                     remaining_letters.remove(letter)
             
             attempts -= 1
+            guesses.append({'guess': guess, 'feedback': ''.join(feedback)})
             if attempts == 0:
                 message = f"Sorry, you've run out of attempts. The word was: {answer}"
                 answer = random.choice(word_list)  # 새로운 게임을 위해 단어 재설정
                 attempts = 6  # 시도 횟수 재설정
                 remaining_letters = list(string.ascii_lowercase)  # 남은 알파벳 재설정
+                guesses = []  # 입력 내역 초기화
             else:
-                message = f"{guess}: " + ''.join(feedback)
+                message = "Feedback: " + ''.join(feedback)
 
             return render(request, 'wordle/index.html', {
                 'message': message,
                 'remaining_letters': ''.join(remaining_letters),
                 'attempts': attempts,
+                'guesses': guesses,
             })
     
     return render(request, 'wordle/index.html', {
         'remaining_letters': ''.join(remaining_letters),
         'attempts': attempts,
+        'guesses': guesses,
     })
