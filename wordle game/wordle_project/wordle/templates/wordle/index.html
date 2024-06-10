@@ -31,7 +31,7 @@
         button:hover {
             background-color: #45a049;
         }
-        .recent feedback {
+        .feedback {
             font-size: 20px;
             margin-top: 20px;
         }
@@ -61,9 +61,9 @@
     </div>
     <div class="guess-list">
         {% for guess in guesses %}
-            <p class="guess-item">{{ guess.guess }}: {{ guess.recent feedback }}</p>
+            <p class="guess-item">{{ guess.guess }}: {{ guess.feedback }}</p>
         {% endfor %}
     </div>
-    <p class="recent feedback">{{ message }}</p>
+    <p class="feedback">{{ message }}</p>
 </body>
 </html>
