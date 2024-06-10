@@ -85,3 +85,7 @@ def index(request):
         'attempts': attempts,
         'guesses': guesses,
     })
+
+def reset(request):
+    request.session.flush()  # 세션 데이터 초기화
+    return redirect('index')
