@@ -10,19 +10,20 @@
         h1 {
             color: #333;
         }
-        p, .guess-item {
+        p {
             font-size: 18px;
         }
-        form, .button-group {
+        form {
             margin-bottom: 20px;
         }
-        input[type="text"], button {
+        input[type="text"] {
             padding: 10px;
             font-size: 18px;
             width: 200px;
-            margin-right: 10px;
         }
         button {
+            padding: 10px 20px;
+            font-size: 18px;
             background-color: #4CAF50;
             color: white;
             border: none;
@@ -42,6 +43,9 @@
         .guess-list {
             margin-top: 20px;
         }
+        .guess-item {
+            font-size: 18px;
+        }
     </style>
 </head>
 <body>
@@ -51,8 +55,11 @@
     <form method="post">
         {% csrf_token %}
         <input type="text" name="guess" maxlength="5" required>
-        <button type="submit">Guess</button>
-        <button type="button" onclick="location.href='/reset/'">Reset Game</button>
+        <button type="submit" name="submit">Guess</button>
+    </form>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" name="reset">Reset Game</button>
     </form>
     <div class="explanation">
         <p>🟢 : 위치와 문자가 모두 일치</p>

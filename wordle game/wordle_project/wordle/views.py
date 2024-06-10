@@ -1,8 +1,7 @@
 import random
 import string
 import requests
-from django.shortcuts import render
-from django.urls import reverse
+from django.shortcuts import render, redirect
 
 # 1. 단어 리스트 준비
 word_list = ["apple", "grape", "berry", "melon", "lemon", "mango","watch","crane", "blush", "flint", "glove", "jumpy", "knack", "plumb", "quash", "sword", "zesty"]
@@ -21,7 +20,7 @@ def is_valid_word(word):
 def index(request):
     global remaining_letters, answer, attempts, guesses
 
-    if request.method == 'POST':
+    if request.method == 'POST' and 'guess' in request.POST:
         guess = request.POST['guess'].lower()
         
         if len(guess) != 5:
@@ -83,17 +82,16 @@ def index(request):
                 'attempts': attempts,
                 'guesses': guesses,
             })
+
+    elif request.method == 'POST' and 'reset' in request.POST:
+        answer = random.choice(word_list)
+        attempts = 6
+        remaining_letters = list(string.ascii_lowercase)
+        guesses = []
+        return redirect('index')
     
     return render(request, 'wordle/index.html', {
         'remaining_letters': ''.join(remaining_letters),
         'attempts': attempts,
         'guesses': guesses,
     })
-
-def reset_game(request):
-    global remaining_letters, answer, attempts, guesses
-    remaining_letters = list(string.ascii_lowercase)
-    answer = random.choice(word_list)
-    attempts = 6
-    guesses = []
-    return redirect(reverse('index'))  # 'index'는 URL name입니다.
