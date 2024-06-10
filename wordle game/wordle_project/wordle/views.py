@@ -2,7 +2,7 @@ import random
 import string
 from django.shortcuts import render
 
-# 1. 단어 리스트 준비
+# 1. 단어 리스트 준비qlqlqlqlqlqlqlqlql
 word_list = ["apple", "grape", "berry", "melon", "lemon", "mango"]
 
 # 남은 알파벳 초기화
