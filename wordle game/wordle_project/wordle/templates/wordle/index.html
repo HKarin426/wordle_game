@@ -36,6 +36,10 @@
             font-size: 20px;
             margin-top: 20px;
         }
+        .explanation {
+            font-size: 16px;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
@@ -47,6 +51,11 @@
         <input type="text" name="guess" maxlength="5" required>
         <button type="submit">Guess</button>
     </form>
+    <div class="explanation">
+        <p>🟢 : 위치와 문자가 모두 일치</p>
+        <p>🟡 : 문자는 일치하나 위치가 다름</p>
+        <p>🔴 : 문자가 일치하지 않음</p>
+    </div>
     <p class="feedback">{{ message }}</p>
 </body>
 </html>
