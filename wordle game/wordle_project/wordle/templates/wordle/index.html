@@ -6,7 +6,7 @@
         body {
             font-family: Arial, sans-serif;
             margin: 50px;
-            transition: background-color 0.3s, color 0.3s; /* 테마 전환 시 부드럽게 변화하도록 설정 */
+            transition: background-color 0.3s, color 0.3s;  /* 테마 전환 시 부드럽게 변화하도록 설정 */
         }
         body.light-mode {
             background-color: white;
@@ -56,7 +56,7 @@
             font-size: 18px;
         }
         .correct {
-            background-color: green;
+            background-color: rgb(0, 204, 0);
             color: white;
             display: inline-block;
             width: 30px;
@@ -67,7 +67,7 @@
             border-radius: 5px;
         }
         .partial {
-            background-color: yellow;
+            background-color: rgb(252, 213, 63);
             color: black;
             display: inline-block;
             width: 30px;
@@ -106,11 +106,13 @@
     <h1>Wordle Game</h1>
     <p>남은 알파벳: {{ remaining_letters }}</p>
     <p>남은 시도: {{ attempts }}</p>
+    {% if not game_over %}
     <form method="post">
         {% csrf_token %}
         <input type="text" name="guess" maxlength="5" required>
         <button type="submit" name="submit">시도하기</button>
     </form>
+    {% endif %}
     <form method="post">
         {% csrf_token %}
         <button type="submit" name="reset">다시하기</button>
@@ -122,7 +124,7 @@
     </div>
     <div class="guess-list">
         {% for guess in guesses %}
-            <p class="guess-item">{{ guess.feedback|safe }}</p> <!-- guess.feedback을 안전하게 렌더링 -->
+            <p class="guess-item">{{ guess.feedback|safe }}</p>  <!-- guess.feedback을 안전하게 렌더링 -->
         {% endfor %}
     </div>
     <p class="feedback">{{ message }}</p>
@@ -132,16 +134,16 @@
     <script>
         function toggleTheme() {
             const body = document.body;
-            body.classList.toggle('light-mode');
-            body.classList.toggle('dark-mode');
+            body.classList.toggle('light-mode');  // light-mode 클래스를 토글
+            body.classList.toggle('dark-mode');  // dark-mode 클래스를 토글
             const theme = body.classList.contains('dark-mode') ? 'dark' : 'light';
-            localStorage.setItem('theme', theme);
+            localStorage.setItem('theme', theme);  // 선택한 테마를 localStorage에 저장
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            const savedTheme = localStorage.getItem('theme') || 'light';
-            document.body.classList.remove('light-mode', 'dark-mode');
-            document.body.classList.add(savedTheme + '-mode');
+            const savedTheme = localStorage.getItem('theme') || 'light';  // 저장된 테마를 가져옴
+            document.body.classList.remove('light-mode', 'dark-mode');  // 모든 테마 클래스를 제거
+            document.body.classList.add(savedTheme + '-mode');  // 저장된 테마를 적용
         });
     </script>
 </body>
