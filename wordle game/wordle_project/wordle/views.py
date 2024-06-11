@@ -1,5 +1,5 @@
 # views.py
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 import random
 import string
 import requests
