@@ -88,6 +88,19 @@
             margin: 2px;
             border-radius: 5px;
         }
+        .unused {
+            background-color: white;
+            color: black;
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            text-align: center;
+            line-height: 30px;
+            margin: 2px;
+            border-radius: 5px;
+            border: 1px solid black;
+            cursor: pointer;
+        }
         .theme-toggle {
             position: fixed;
             top: 10px;
@@ -100,16 +113,18 @@
             font-size: 16px;
             border-radius: 5px;
         }
+        .remaining-letters {
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body class="light-mode">
     <h1>Wordle Game</h1>
-    <p>남은 알파벳: {{ remaining_letters }}</p>
     <p>남은 시도: {{ attempts }}</p>
     {% if not game_over %}
     <form method="post">
         {% csrf_token %}
-        <input type="text" name="guess" maxlength="5" required>
+        <input type="text" id="guess-input" name="guess" maxlength="5" required>
         <button type="submit" name="submit">시도하기</button>
     </form>
     {% endif %}
@@ -121,6 +136,7 @@
         <p>🟢 : 위치와 문자가 모두 일치</p>
         <p>🟡 : 문자는 일치하나 위치가 다름</p>
         <p>⚫ : 문자가 일치하지 않음</p>
+        <p>⬜ : 아직 입력해보지 않은 알파벳</p>
     </div>
     <div class="guess-list">
         {% for guess in guesses %}
@@ -128,6 +144,12 @@
         {% endfor %}
     </div>
     <p class="feedback">{{ message }}</p>
+
+    <div class="remaining-letters">
+        {% for letter, status in letter_status.items %}
+            <span class="{{ status }}" onclick="addLetter('{{ letter }}')">{{ letter }}</span>
+        {% endfor %}
+    </div>
 
     <button class="theme-toggle" onclick="toggleTheme()">테마 변경</button>
 
@@ -145,6 +167,13 @@
             document.body.classList.remove('light-mode', 'dark-mode');  // 모든 테마 클래스를 제거
             document.body.classList.add(savedTheme + '-mode');  // 저장된 테마를 적용
         });
+
+        function addLetter(letter) {
+            const input = document.getElementById('guess-input');
+            if (input.value.length < 5) {
+                input.value += letter;
+            }
+        }
     </script>
 </body>
 </html>
