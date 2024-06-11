@@ -1,12 +1,10 @@
-#가상환경에 pip install requests 설치 후 코드 실행
-
 import random
 import string
 import requests
 from django.shortcuts import render, redirect
 
 # 1. 단어 리스트 준비
-word_list = ["apple", "grape", "berry", "melon", "lemon", "mango", "watch", "crane", "blush", "flint", "glove", "jumpy", "knack", "plumb", "quash", "sword", "zesty"]
+word_list = ["apple", "grape", "berry", "melon", "lemon", "mango", "watch", "crane", "blush", "flint", "glove", "jumpy", "knack", "plumb", "quash", "sword"]
 
 # 남은 알파벳 초기화
 remaining_letters = list(string.ascii_lowercase)  # 알파벳 소문자 리스트
@@ -35,8 +33,8 @@ def index(request):
                     'remaining_letters': remaining_letters,
                     'attempts': attempts,
                     'guesses': guesses,
-                    'game_over': game_over
-                    'letter_status': letter_status,
+                    'game_over': game_over,
+                    'letter_status': letter_status
                 })
 
             if not is_valid_word(guess):  # 단어가 유효하지 않으면 에러 메시지 반환
@@ -45,7 +43,7 @@ def index(request):
                     'remaining_letters': remaining_letters,
                     'attempts': attempts,
                     'guesses': guesses,
-                    'game_over': game_over
+                    'game_over': game_over,
                     'letter_status': letter_status,
                 })
 
@@ -58,7 +56,7 @@ def index(request):
                     'remaining_letters': remaining_letters,
                     'attempts': attempts,
                     'guesses': guesses,
-                    'game_over': game_over
+                    'game_over': game_over,
                     'letter_status': letter_status,
                 })
             else:
