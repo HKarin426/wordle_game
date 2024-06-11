@@ -2,16 +2,176 @@
 <html>
 <head>
     <title>Wordle Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 50px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        body.light-mode {
+            background-color: white;
+            color: black;
+        }
+        body.dark-mode {
+            background-color: #121212;
+            color: white;
+        }
+        h1 {
+            color: inherit;
+        }
+        p {
+            font-size: 18px;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        input[type="text"] {
+            padding: 10px;
+            font-size: 18px;
+            width: 200px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 18px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .feedback {
+            font-size: 20px;
+            margin-top: 20px;
+        }
+        .explanation {
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        .guess-list {
+            margin-top: 20px;
+        }
+        .guess-item {
+            font-size: 18px;
+        }
+        .correct {
+            background-color: green;
+            color: white;
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            text-align: center;
+            line-height: 30px;
+            margin: 2px;
+            border-radius: 5px;
+        }
+        .partial {
+            background-color: yellow;
+            color: black;
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            text-align: center;
+            line-height: 30px;
+            margin: 2px;
+            border-radius: 5px;
+        }
+        .wrong {
+            background-color: black;
+            color: white;
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            text-align: center;
+            line-height: 30px;
+            margin: 2px;
+            border-radius: 5px;
+        }
+        .unused {
+            background-color: white;
+            color: black;
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            text-align: center;
+            line-height: 30px;
+            margin: 2px;
+            border-radius: 5px;
+            border: 1px solid black;
+            cursor: pointer;
+        }
+        .theme-toggle {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            padding: 10px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            font-size: 16px;
+            border-radius: 5px;
+        }
+        .remaining-letters {
+            margin-top: 20px;
+        }
+    </style>
 </head>
-<body>
+<body class="light-mode">
     <h1>Wordle Game</h1>
-    <p>Remaining letters: {{ remaining_letters }}</p>
     <p>Attempts left: {{ attempts }}</p>
     <form method="post">
         {% csrf_token %}
-        <input type="text" name="guess" maxlength="5" required>
-        <button type="submit">Guess</button>
+        <input type="text" id="guess-input" name="guess" maxlength="5" required>
+        <button type="submit" name="submit">Guess</button>
     </form>
-    <p>{{ message }}</p>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" name="reset">Reset Game</button>
+    </form>
+    <div class="explanation">
+        <p>🟢 : 위치와 문자가 모두 일치</p>
+        <p>🟡 : 문자는 일치하나 위치가 다름</p>
+        <p>⚫ : 문자가 일치하지 않음</p>
+        <p>⬜ : 아직 입력 안한 알파벳</p>
+    </div>
+    <div class="guess-list">
+        {% for guess in guesses %}
+            <p class="guess-item">{{ guess.feedback|safe }}</p>
+        {% endfor %}
+    </div>
+    <p class="feedback">{{ message }}</p>
+
+    <div class="remaining-letters">
+        {% for letter, status in letter_status.items %}
+            <span class="{{ status }}" onclick="addLetter('{{ letter }}')">{{ letter }}</span>
+        {% endfor %}
+    </div>
+
+    <button class="theme-toggle" onclick="toggleTheme()">Toggle Theme</button>
+
+    <script>
+        function toggleTheme() {
+            const body = document.body;
+            body.classList.toggle('light-mode');
+            body.classList.toggle('dark-mode');
+            const theme = body.classList.contains('dark-mode') ? 'dark' : 'light';
+            localStorage.setItem('theme', theme);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.body.classList.remove('light-mode', 'dark-mode');
+            document.body.classList.add(savedTheme + '-mode');
+        });
+
+        function addLetter(letter) {
+            const input = document.getElementById('guess-input');
+            if (input.value.length < 5) {
+                input.value += letter;
+            }
+        }
+    </script>
 </body>
 </html>
