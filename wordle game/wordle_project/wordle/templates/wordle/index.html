@@ -160,9 +160,16 @@
     <div class="remaining-letters">
         {% for letter, status in letter_status.items %}
             <span class="{{ status }}" onclick="addLetter('{{ letter }}')">{{ letter }}</span>
-            {% if forloop.counter == 10 or forloop.counter == 19 %} <br> {% endif %}
+            {% if forloop.counter == 10 or forloop.counter == 19 %}<br>{% endif %}
+            {% if forloop.counter == 10 %}
+                &nbsp;&nbsp;&nbsp;&nbsp;
+            {% endif %}
+            {% if forloop.counter == 19 %}
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            {% endif %}
         {% endfor %}
     </div>
+    
 
     <button class="theme-toggle" onclick="toggleTheme()">테마 변경</button>
 
