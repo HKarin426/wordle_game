@@ -6,14 +6,14 @@
         body {
             font-family: Arial, sans-serif;
             margin: 50px;
-            transition: background-color 0.3s, color 0.3s;
+            transition: background-color 0.3s, color 0.3s;  /* 테마 전환 시 부드럽게 변화하도록 설정 */
         }
         body.light-mode {
             background-color: white;
             color: black;
         }
         body.dark-mode {
-            background-color: #121212;
+            background-color: #636363;
             color: white;
         }
         h1 {
@@ -56,7 +56,7 @@
             font-size: 18px;
         }
         .correct {
-            background-color: green;
+            background-color: rgb(0, 204, 0);
             color: white;
             display: inline-block;
             width: 30px;
@@ -67,7 +67,7 @@
             border-radius: 5px;
         }
         .partial {
-            background-color: yellow;
+            background-color: rgb(252, 213, 63);
             color: black;
             display: inline-block;
             width: 30px;
@@ -78,7 +78,7 @@
             border-radius: 5px;
         }
         .wrong {
-            background-color: black;
+            background-color: rgb(0, 0, 0);
             color: white;
             display: inline-block;
             width: 30px;
@@ -120,25 +120,27 @@
 </head>
 <body class="light-mode">
     <h1>Wordle Game</h1>
-    <p>Attempts left: {{ attempts }}</p>
+    <p>남은 시도: {{ attempts }}</p>
+    {% if not game_over %}
     <form method="post">
         {% csrf_token %}
         <input type="text" id="guess-input" name="guess" maxlength="5" required>
-        <button type="submit" name="submit">Guess</button>
+        <button type="submit" name="submit">시도하기</button>
     </form>
+    {% endif %}
     <form method="post">
         {% csrf_token %}
-        <button type="submit" name="reset">Reset Game</button>
+        <button type="submit" name="reset">다시하기</button>
     </form>
     <div class="explanation">
         <p>🟢 : 위치와 문자가 모두 일치</p>
         <p>🟡 : 문자는 일치하나 위치가 다름</p>
         <p>⚫ : 문자가 일치하지 않음</p>
-        <p>⬜ : 아직 입력 안한 알파벳</p>
+        <p>⬜ : 아직 입력해보지 않은 알파벳</p>
     </div>
     <div class="guess-list">
         {% for guess in guesses %}
-            <p class="guess-item">{{ guess.feedback|safe }}</p>
+            <p class="guess-item">{{ guess.feedback|safe }}</p>  <!-- guess.feedback을 안전하게 렌더링 -->
         {% endfor %}
     </div>
     <p class="feedback">{{ message }}</p>
@@ -149,21 +151,21 @@
         {% endfor %}
     </div>
 
-    <button class="theme-toggle" onclick="toggleTheme()">Toggle Theme</button>
+    <button class="theme-toggle" onclick="toggleTheme()">테마 변경</button>
 
     <script>
         function toggleTheme() {
             const body = document.body;
-            body.classList.toggle('light-mode');
-            body.classList.toggle('dark-mode');
+            body.classList.toggle('light-mode');  // light-mode 클래스를 토글
+            body.classList.toggle('dark-mode');  // dark-mode 클래스를 토글
             const theme = body.classList.contains('dark-mode') ? 'dark' : 'light';
-            localStorage.setItem('theme', theme);
+            localStorage.setItem('theme', theme);  // 선택한 테마를 localStorage에 저장
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            const savedTheme = localStorage.getItem('theme') || 'light';
-            document.body.classList.remove('light-mode', 'dark-mode');
-            document.body.classList.add(savedTheme + '-mode');
+            const savedTheme = localStorage.getItem('theme') || 'light';  // 저장된 테마를 가져옴
+            document.body.classList.remove('light-mode', 'dark-mode');  // 모든 테마 클래스를 제거
+            document.body.classList.add(savedTheme + '-mode');  // 저장된 테마를 적용
         });
 
         function addLetter(letter) {
