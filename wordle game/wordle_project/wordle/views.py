@@ -6,7 +6,7 @@ import requests
 from django.shortcuts import render, redirect
 
 # 1. 단어 리스트 준비
-word_list = ['tight', 'print', 'pilot', 'spend', 'board', 'count', 'march', 'topic', 'slice', 'above']
+word_list = ['tough', 'print', 'pilot', 'spend', 'board', 'count', 'march', 'topic', 'slice', 'above']
 
 # 남은 알파벳 초기화
 qwerty = ['q','w','e','r','t','y','u','i','o','p','a','s','d','f','g','h','j','k','l','z','x','c','v','b','n','m']  # qwerty 배열
@@ -85,7 +85,7 @@ def index(request):
                     message = f"아쉽지만 모든 시도 횟수를 소진하셨습니다. 정답은 {answer} 입니다."
                     answer = random.choice(word_list)  # 새로운 게임을 위해 단어 재설정
                     attempts = 6  # 시도 횟수 재설정
-                    remaining_letters = list(string.ascii_lowercase)  # 남은 알파벳 재설정
+                    remaining_letters = qwerty  # 남은 알파벳 재설정
                     guesses = []  # 입력 내역 초기화
                     letter_status = {letter: 'unused' for letter in remaining_letters}  # 알파벳 상태 재설정
                     game_over = True  # 게임 종료 상태로 설정

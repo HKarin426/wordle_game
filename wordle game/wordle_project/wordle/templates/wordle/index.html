@@ -7,6 +7,10 @@
             font-family: Arial, sans-serif;
             margin: 50px;
             transition: background-color 0.3s, color 0.3s;
+            display: flex; /* 요소들을 수평 정렬하기 위해 Flexbox 레이아웃 사용 */
+            flex-direction: column; /* 요소들을 세로로 배열 */
+            align-items: center; /* 가로 정렬을 중앙으로 설정 */
+            justify-content: center; /* 세로 정렬을 중앙으로 설정 */
         }
         body.light-mode {
             background-color: white;
@@ -116,6 +120,9 @@
         .remaining-letters {
             margin-top: 20px;
         }
+        .inline-item {
+            display: inline-block;
+        }
     </style>
 </head>
 <body class="light-mode">
@@ -133,11 +140,16 @@
         <button type="submit" name="reset">다시하기</button>
     </form>
     <div class="explanation">
-        <p>🟢 : 위치와 문자가 모두 일치</p>
-        <p>🟡 : 문자는 일치하나 위치가 다름</p>
-        <p>⚫ : 문자가 일치하지 않음</p>
-        <p>⬜ : 아직 입력해보지 않은 알파벳</p>
+        <div class="inline-item">
+            <p>🟢 : 위치와 문자가 모두 일치</p>
+            <p>🟡 : 문자는 일치하나 위치가 다름</p>
+        </div>
+        <div class="inline-item">
+            <p>⚫ : 문자가 일치하지 않음</p>
+            <p>⬜ : 아직 입력해보지 않은 알파벳</p>
+        </div>
     </div>
+    
     <div class="guess-list">
         {% for guess in guesses %}
             <p class="guess-item">{{ guess.feedback|safe }}</p>
