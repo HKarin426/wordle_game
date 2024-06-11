@@ -1,3 +1,5 @@
+#가상환경에 pip install requests 설치 후 코드 실행
+
 import random
 import string
 import requests
