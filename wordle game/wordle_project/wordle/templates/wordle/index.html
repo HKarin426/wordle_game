@@ -1,15 +1,23 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Wordle 게임</title>
+    <title>Wordle Game</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 50px;
-            background-color: #f4f4f4;
+            transition: background-color 0.3s, color 0.3s;  /* 테마 전환 시 부드럽게 변화하도록 설정 */
+        }
+        body.light-mode {
+            background-color: white;
+            color: black;
+        }
+        body.dark-mode {
+            background-color: #636363;
+            color: white;
         }
         h1 {
-            color: #333;
+            color: inherit;
         }
         p {
             font-size: 18px;
@@ -21,7 +29,6 @@
             padding: 10px;
             font-size: 18px;
             width: 200px;
-            margin-right: 10px;
         }
         button {
             padding: 10px 20px;
@@ -30,7 +37,6 @@
             color: white;
             border: none;
             cursor: pointer;
-            transition: background-color 0.3s;
         }
         button:hover {
             background-color: #45a049;
@@ -48,9 +54,10 @@
         }
         .guess-item {
             font-size: 18px;
-            margin-bottom: 5px;
         }
-        .correct, .partial, .wrong {
+        .correct {
+            background-color: rgb(0, 204, 0);
+            color: white;
             display: inline-block;
             width: 30px;
             height: 30px;
@@ -59,42 +66,114 @@
             margin: 2px;
             border-radius: 5px;
         }
-        .correct {
-            background-color: green;
-            color: white;
-        }
         .partial {
-            background-color: yellow;
+            background-color: rgb(252, 213, 63);
             color: black;
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            text-align: center;
+            line-height: 30px;
+            margin: 2px;
+            border-radius: 5px;
         }
         .wrong {
-            background-color: black;
+            background-color: rgb(0, 0, 0);
             color: white;
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            text-align: center;
+            line-height: 30px;
+            margin: 2px;
+            border-radius: 5px;
+        }
+        .unused {
+            background-color: white;
+            color: black;
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            text-align: center;
+            line-height: 30px;
+            margin: 2px;
+            border-radius: 5px;
+            border: 1px solid black;
+            cursor: pointer;
+        }
+        .theme-toggle {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            padding: 10px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            font-size: 16px;
+            border-radius: 5px;
+        }
+        .remaining-letters {
+            margin-top: 20px;
         }
     </style>
 </head>
-<body>
-    <h1>Wordle 게임</h1>
-    <p>남은 문자: {{ remaining_letters }}</p>
+<body class="light-mode">
+    <h1>Wordle Game</h1>
     <p>남은 시도: {{ attempts }}</p>
+    {% if not game_over %}
     <form method="post">
         {% csrf_token %}
-        <input type="text" name="guess" maxlength="5" required autofocus>
-        <button type="submit" name="submit">추측하기</button>
+        <input type="text" id="guess-input" name="guess" maxlength="5" required>
+        <button type="submit" name="submit">시도하기</button>
     </form>
+    {% endif %}
     <form method="post">
         {% csrf_token %}
-        <button type="submit" name="reset">게임 초기화</button>
+        <button type="submit" name="reset">다시하기</button>
     </form>
     <div class="explanation">
-        <p><span class="correct">🟢</span> : 위치와 문자가 모두 일치</p>
-        <p><span class="partial">🟡</span> : 문자는 일치하나 위치가 다름</p>
-        <p><span class="wrong">⚫</span> : 문자가 일치하지 않음</p>
+        <p>🟢 : 위치와 문자가 모두 일치</p>
+        <p>🟡 : 문자는 일치하나 위치가 다름</p>
+        <p>⚫ : 문자가 일치하지 않음</p>
+        <p>⬜ : 아직 입력해보지 않은 알파벳</p>
     </div>
     <div class="guess-list">
         {% for guess in guesses %}
-            <p class="guess-item">{{ guess.feedback|safe }}</p>
+            <p class="guess-item">{{ guess.feedback|safe }}</p>  <!-- guess.feedback을 안전하게 렌더링 -->
         {% endfor %}
     </div>
+    <p class="feedback">{{ message }}</p>
+
+    <div class="remaining-letters">
+        {% for letter, status in letter_status.items %}
+            <span class="{{ status }}" onclick="addLetter('{{ letter }}')">{{ letter }}</span>
+        {% endfor %}
+    </div>
+
+    <button class="theme-toggle" onclick="toggleTheme()">테마 변경</button>
+
+    <script>
+        function toggleTheme() {
+            const body = document.body;
+            body.classList.toggle('light-mode');  // light-mode 클래스를 토글
+            body.classList.toggle('dark-mode');  // dark-mode 클래스를 토글
+            const theme = body.classList.contains('dark-mode') ? 'dark' : 'light';
+            localStorage.setItem('theme', theme);  // 선택한 테마를 localStorage에 저장
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme') || 'light';  // 저장된 테마를 가져옴
+            document.body.classList.remove('light-mode', 'dark-mode');  // 모든 테마 클래스를 제거
+            document.body.classList.add(savedTheme + '-mode');  // 저장된 테마를 적용
+        });
+
+        function addLetter(letter) {
+            const input = document.getElementById('guess-input');
+            if (input.value.length < 5) {
+                input.value += letter;
+            }
+        }
+    </script>
 </body>
 </html>
