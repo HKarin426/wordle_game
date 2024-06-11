@@ -13,7 +13,7 @@
             color: black;
         }
         body.dark-mode {
-            background-color: #121212;
+            background-color: #636363;
             color: white;
         }
         h1 {
@@ -78,7 +78,7 @@
             border-radius: 5px;
         }
         .wrong {
-            background-color: gray;
+            background-color: rgb(0, 0, 0);
             color: white;
             display: inline-block;
             width: 30px;
@@ -104,16 +104,16 @@
 </head>
 <body class="light-mode">
     <h1>Wordle Game</h1>
-    <p>Remaining letters: {{ remaining_letters }}</p>
-    <p>Attempts left: {{ attempts }}</p>
+    <p>남은 알파벳: {{ remaining_letters }}</p>
+    <p>남은 시도: {{ attempts }}</p>
     <form method="post">
         {% csrf_token %}
         <input type="text" name="guess" maxlength="5" required>
-        <button type="submit" name="submit">Guess</button>
+        <button type="submit" name="submit">시도하기</button>
     </form>
     <form method="post">
         {% csrf_token %}
-        <button type="submit" name="reset">Reset Game</button>
+        <button type="submit" name="reset">다시하기</button>
     </form>
     <div class="explanation">
         <p>🟢 : 위치와 문자가 모두 일치</p>
@@ -127,7 +127,7 @@
     </div>
     <p class="feedback">{{ message }}</p>
 
-    <button class="theme-toggle" onclick="toggleTheme()">Toggle Theme</button>
+    <button class="theme-toggle" onclick="toggleTheme()">테마 변경</button>
 
     <script>
         function toggleTheme() {
