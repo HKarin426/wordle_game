@@ -69,7 +69,7 @@
             border-radius: 5px;
         }
         .wrong {
-            background-color: gray;
+            background-color: rgb(0, 0, 0);
             color: white;
             display: inline-block;
             width: 30px;
@@ -97,7 +97,7 @@
     <div class="explanation">
         <p>🟢 : 위치와 문자가 모두 일치</p>
         <p>🟡 : 문자는 일치하나 위치가 다름</p>
-        <p>🔴 : 문자가 일치하지 않음</p>
+        <p>⚫ : 문자가 일치하지 않음</p>
     </div>
     <div class="guess-list">
         {% for guess in guesses %}
