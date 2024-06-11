@@ -4,7 +4,7 @@ import requests
 from django.shortcuts import render, redirect
 
 # 1. 단어 리스트 준비
-word_list = ["apple", "grape", "berry", "melon", "lemon", "mango", "watch", "crane", "blush", "flint", "glove", "jumpy", "knack", "plumb", "quash", "sword", "zesty"]
+word_list = ["apple"] #, "grape", "berry", "melon", "lemon", "mango", "watch", "crane", "blush", "flint", "glove", "jumpy", "knack", "plumb", "quash", "sword", "zesty"]
 
 # 남은 알파벳 초기화
 remaining_letters = list(string.ascii_lowercase)
