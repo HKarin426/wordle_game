@@ -1,99 +1,66 @@
-import random
-import string
-import requests
 from django.shortcuts import render, redirect
+from django.utils.crypto import get_random_string
 
-# 1. 단어 리스트 준비
-word_list = ["apple"] #, "grape", "berry", "melon", "lemon", "mango", "watch", "crane", "blush", "flint", "glove", "jumpy", "knack", "plumb", "quash", "sword", "zesty"]
+# 상수 정의
+WORD_LIST = ['apple', 'bread', 'crane', 'dance', 'eagle']  # 단순화된 단어 목록
+MAX_ATTEMPTS = 6
 
-# 남은 알파벳 초기화
-remaining_letters = list(string.ascii_lowercase)
-answer = random.choice(word_list)
-attempts = 6
-guesses = []
-
-def is_valid_word(word):
-    api_url = f"https://api.dictionaryapi.dev/api/v2/entries/en/{word}"
-    response = requests.get(api_url)
-    return response.status_code == 200
+def get_random_word():
+    return get_random_string(length=5, allowed_chars='abcdefghijklmnopqrstuvwxyz')
 
 def index(request):
-    global remaining_letters, answer, attempts, guesses
+    if 'word' not in request.session:
+        request.session['word'] = get_random_word()
+        request.session['attempts'] = MAX_ATTEMPTS
+        request.session['guesses'] = []
+
+    word = request.session['word']
+    attempts = request.session['attempts']
+    guesses = request.session['guesses']
 
     if request.method == 'POST':
-        if 'guess' in request.POST:
-            guess = request.POST['guess'].lower()
-            
-            if len(guess) != 5:
-                return render(request, 'wordle/index.html', {
-                    'message': 'Please enter a 5-letter word.',
-                    'remaining_letters': '   '.join(remaining_letters),
-                    'attempts': attempts,
-                    'guesses': guesses,
-                })
-
-            if not is_valid_word(guess):
-                return render(request, 'wordle/index.html', {
-                    'message': 'This is not a valid word.',
-                    'remaining_letters': '   '.join(remaining_letters),
-                    'attempts': attempts,
-                    'guesses': guesses,
-                })
-
-            if guess == answer:
-                feedback = ''.join([f'<span class="correct">{guess[i]}</span>' for i in range(5)])
-                guesses.append({'guess': guess, 'feedback': feedback})
-                return render(request, 'wordle/index.html', {
-                    'message': f'Congratulations! You\'ve guessed the word correctly: {guess}',
-                    'remaining_letters': '   '.join(remaining_letters),
-                    'attempts': attempts,
-                    'guesses': guesses,
-                })
-            else:
-                feedback = []
-                correct_letters = set()
-                for i in range(5):
-                    if guess[i] == answer[i]:
-                        feedback.append(f'<span class="correct">{guess[i]}</span>')  # 🟢: 위치와 문자가 모두 일치
-                        correct_letters.add(guess[i])
-                    elif guess[i] in answer:
-                        feedback.append(f'<span class="partial">{guess[i]}</span>')  # 🟡: 문자는 일치하나 위치가 다름
-                        correct_letters.add(guess[i])
-                    else:
-                        feedback.append(f'<span class="wrong">{guess[i]}</span>')  # 🔴: 문자가 일치하지 않음
-
-                # 사용된 문자를 남은 알파벳에서 제거 (단, 정답에 들어가는 알파벳은 제거하지 않음)
-                for letter in guess:
-                    if letter not in correct_letters and letter in remaining_letters:
-                        remaining_letters.remove(letter)
-                
-                attempts -= 1
-                guesses.append({'guess': guess, 'feedback': ''.join(feedback)})
-                if attempts == 0:
-                    message = f"Sorry, you've run out of attempts. The word was: {answer}"
-                    answer = random.choice(word_list)  # 새로운 게임을 위해 단어 재설정
-                    attempts = 6  # 시도 횟수 재설정
-                    remaining_letters = list(string.ascii_lowercase)  # 남은 알파벳 재설정
-                    guesses = []  # 입력 내역 초기화
-                else:
-                    message = ""
-
-                return render(request, 'wordle/index.html', {
-                    'message': message,
-                    'remaining_letters': '   '.join(remaining_letters),
-                    'attempts': attempts,
-                    'guesses': guesses,
-                })
-
-        elif 'reset' in request.POST:
-            answer = random.choice(word_list)
-            attempts = 6
-            remaining_letters = list(string.ascii_lowercase)
-            guesses = []
+        if 'reset' in request.POST:
+            request.session.flush()
             return redirect('index')
-    
-    return render(request, 'wordle/index.html', {
-        'remaining_letters': '   '.join(remaining_letters),
+        else:
+            guess = request.POST.get('guess').lower()
+            feedback = generate_feedback(word, guess)
+            guesses.append({'guess': guess, 'feedback': feedback})
+            attempts -= 1
+            request.session['attempts'] = attempts
+            request.session['guesses'] = guesses
+
+            if guess == word or attempts == 0:
+                return redirect('result')
+
+    context = {
+        'remaining_letters': len(set(word) - set(''.join([g['guess'] for g in guesses]))),
         'attempts': attempts,
+        'guesses': guesses
+    }
+
+    return render(request, 'index.html', context)
+
+def result(request):
+    word = request.session.get('word', '')
+    guesses = request.session.get('guesses', [])
+    won = any(guess['guess'] == word for guess in guesses)
+    
+    context = {
+        'word': word,
         'guesses': guesses,
-    })
+        'won': won
+    }
+
+    return render(request, 'result.html', context)
+
+def generate_feedback(word, guess):
+    feedback = []
+    for i, char in enumerate(guess):
+        if char == word[i]:
+            feedback.append(f'<span class="correct">{char}</span>')
+        elif char in word:
+            feedback.append(f'<span class="partial">{char}</span>')
+        else:
+            feedback.append(f'<span class="wrong">{char}</span>')
+    return ''.join(feedback)
