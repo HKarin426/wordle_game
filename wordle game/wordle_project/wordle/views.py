@@ -27,7 +27,7 @@ def index(request):
             
             if len(guess) != 5:  # 단어 길이가 5자가 아니면 에러 메시지 반환
                 return render(request, 'wordle/index.html', {
-                    'message': 'Please enter a 5-letter word.',
+                    'message': '5개의 알파벳을 사용하는 단어를 입력해주세요.',
                     'remaining_letters': ''.join(remaining_letters),
                     'attempts': attempts,
                     'guesses': guesses,
@@ -35,7 +35,7 @@ def index(request):
 
             if not is_valid_word(guess):  # 단어가 유효하지 않으면 에러 메시지 반환
                 return render(request, 'wordle/index.html', {
-                    'message': 'This is not a valid word.',
+                    'message': '존재하지 않는 단어입니다.',
                     'remaining_letters': ''.join(remaining_letters),
                     'attempts': attempts,
                     'guesses': guesses,
@@ -45,7 +45,7 @@ def index(request):
                 feedback = ''.join([f'<span class="correct">{guess[i]}</span>' for i in range(5)])
                 guesses.append({'guess': guess, 'feedback': feedback})
                 return render(request, 'wordle/index.html', {
-                    'message': f'Congratulations! You\'ve guessed the word correctly: {guess}',
+                    'message': f'축하합니다! 정답을 맞추셨습니다. 정답은 {guess} 입니다.',
                     'remaining_letters': ''.join(remaining_letters),
                     'attempts': attempts,
                     'guesses': guesses,
@@ -71,7 +71,7 @@ def index(request):
                 attempts -= 1  # 시도 횟수 감소
                 guesses.append({'guess': guess, 'feedback': ''.join(feedback)})  # 사용자의 입력과 피드백을 리스트에 추가
                 if attempts == 0:  # 시도 횟수가 모두 소진된 경우
-                    message = f"Sorry, you've run out of attempts. The word was: {answer}"
+                    message = f"모든 시도 횟수를 소진하셨습니다. 정답은 {answer} 입니다."
                     answer = random.choice(word_list)  # 새로운 게임을 위해 단어 재설정
                     attempts = 6  # 시도 횟수 재설정
                     remaining_letters = list(string.ascii_lowercase)  # 남은 알파벳 재설정
