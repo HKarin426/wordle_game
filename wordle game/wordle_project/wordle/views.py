@@ -41,7 +41,8 @@ def index(request):
                 })
 
             if guess == answer:
-                guesses.append({'guess': guess, 'feedback': '🟢🟢🟢🟢🟢'})
+                feedback = ''.join([f'<span class="correct">{guess[i]}</span>' for i in range(5)])
+                guesses.append({'guess': guess, 'feedback': feedback})
                 return render(request, 'wordle/index.html', {
                     'message': f'Congratulations! You\'ve guessed the word correctly: {guess}',
                     'remaining_letters': ''.join(remaining_letters),
@@ -53,13 +54,13 @@ def index(request):
                 correct_letters = set()
                 for i in range(5):
                     if guess[i] == answer[i]:
-                        feedback.append('🟢')  # 🟢: 위치와 문자가 모두 일치
+                        feedback.append(f'<span class="correct">{guess[i]}</span>')  # 🟢: 위치와 문자가 모두 일치
                         correct_letters.add(guess[i])
                     elif guess[i] in answer:
-                        feedback.append('🟡')  # 🟡: 문자는 일치하나 위치가 다름
+                        feedback.append(f'<span class="partial">{guess[i]}</span>')  # 🟡: 문자는 일치하나 위치가 다름
                         correct_letters.add(guess[i])
                     else:
-                        feedback.append('🔴')  # 🔴: 문자가 일치하지 않음
+                        feedback.append(f'<span class="wrong">{guess[i]}</span>')  # 🔴: 문자가 일치하지 않음
 
                 # 사용된 문자를 남은 알파벳에서 제거 (단, 정답에 들어가는 알파벳은 제거하지 않음)
                 for letter in guess:
@@ -75,7 +76,7 @@ def index(request):
                     remaining_letters = list(string.ascii_lowercase)  # 남은 알파벳 재설정
                     guesses = []  # 입력 내역 초기화
                 else:
-                    message = "Feedback: " + ''.join(feedback)
+                    message = ""
 
                 return render(request, 'wordle/index.html', {
                     'message': message,
