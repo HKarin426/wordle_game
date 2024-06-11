@@ -6,8 +6,15 @@ from django.shortcuts import render, redirect
 # 1. 단어 리스트 준비
 word_list = ["apple", "grape", "berry", "melon", "lemon", "mango", "watch", "crane", "blush", "flint", "glove", "jumpy", "knack", "plumb", "quash", "sword"]
 
-# 남은 알파벳 초기화
-remaining_letters = list(string.ascii_lowercase)  # 알파벳 소문자 리스트
+#남은 알파벳 초기화
+keyboard_arr = { 'arr1' : list("qwertyuiop"),
+                 'arr2' : list("asdfghjkl"),
+                 'arr3' : list("zxcvbnm"),
+                }
+
+remaining_letters = "".join(keyboard_arr['arr1'])
+remaining_letters2 = "".join(keyboard_arr['arr2'])
+remaining_letters3 = "".join(keyboard_arr['arr3'])           #list(string.ascii_lowercase) #keyboard_arr(string.)  # 알파벳 소문자 리스트
 answer = random.choice(word_list)  # 정답 단어를 랜덤으로 선택
 attempts = 6  # 사용자에게 주어진 시도 횟수
 guesses = []  # 사용자가 입력한 단어들과 피드백을 저장하는 리스트
@@ -21,7 +28,7 @@ def is_valid_word(word):
     return response.status_code == 200
 
 def index(request):
-    global remaining_letters, answer, attempts, guesses, game_over, letter_status
+    global remaining_letters, remaining_letters2, remaining_letters3, answer, attempts, guesses, game_over, letter_status
 
     if request.method == 'POST':  # POST 요청일 때
         if 'guess' in request.POST and not game_over:
@@ -31,6 +38,8 @@ def index(request):
                 return render(request, 'wordle/index.html', {
                     'message': '5개의 알파벳을 사용하는 단어를 입력해주세요.',
                     'remaining_letters': remaining_letters,
+                    'remaining_letters2' : remaining_letters2,
+                    'remaining_letters3' : remaining_letters3,
                     'attempts': attempts,
                     'guesses': guesses,
                     'game_over': game_over,
@@ -41,6 +50,8 @@ def index(request):
                 return render(request, 'wordle/index.html', {
                     'message': '존재하지 않는 단어입니다.',
                     'remaining_letters': remaining_letters,
+                    'remaining_letters2' : remaining_letters2,
+                    'remaining_letters3' : remaining_letters3,
                     'attempts': attempts,
                     'guesses': guesses,
                     'game_over': game_over,
@@ -54,6 +65,8 @@ def index(request):
                 return render(request, 'wordle/index.html', {
                     'message': f'축하합니다! 정답을 맞추셨습니다. 정답은 {guess} 입니다.',
                     'remaining_letters': remaining_letters,
+                    'remaining_letters2' : remaining_letters2,
+                    'remaining_letters3' : remaining_letters3,
                     'attempts': attempts,
                     'guesses': guesses,
                     'game_over': game_over,
@@ -93,6 +106,8 @@ def index(request):
                 return render(request, 'wordle/index.html', {
                     'message': message,
                     'remaining_letters': remaining_letters,
+                    'remaining_letters2' : remaining_letters2,
+                    'remaining_letters3' : remaining_letters3,
                     'attempts': attempts,
                     'guesses': guesses,
                     'letter_status': letter_status,
@@ -102,14 +117,20 @@ def index(request):
         elif 'reset' in request.POST:  # 게임을 다시 시작할 때
             answer = random.choice(word_list)
             attempts = 6
-            remaining_letters = list(string.ascii_lowercase)
+            remaining_letters  = "".join(keyboard_arr['arr1']) #list(string.ascii_lowercase)  # #@!
+            remaining_letters2 = "".join(keyboard_arr['arr2'])
+            remaining_letters3 = "".join(keyboard_arr['arr3']) 
             guesses = []
             letter_status = {letter: 'unused' for letter in remaining_letters}
+            letter_status = {letter: 'unused' for letter in remaining_letters2}
+            letter_status = {letter: 'unused' for letter in remaining_letters3}    # #@! letter_status 1 2 3 만들어보기 _ 20240612
             game_over = False  # 게임 종료 상태 해제
             return redirect('index')
     
     return render(request, 'wordle/index.html', {  # GET 요청일 때
         'remaining_letters': remaining_letters,
+        'remaining_letters2' : remaining_letters2,
+        'remaining_letters3' : remaining_letters3,
         'attempts': attempts,
         'guesses': guesses,
         'letter_status': letter_status,

@@ -145,7 +145,36 @@
     </div>
     <p class="feedback">{{ message }}</p>
 
-    <div class="remaining-letters">
+    <div class="remaining-letters">                          <!-- !@# 키보드 자판 배열 (Django 버전) -->
+        <!-- <span class="unused" onclick="addLetter('q')">q</span>
+        <span class="unused" onclick="addLetter('w')">w</span>
+        <span class="unused" onclick="addLetter('e')">e</span>
+        <span class="unused" onclick="addLetter('r')">r</span>
+        <span class="unused" onclick="addLetter('t')">t</span>
+        <span class="unused" onclick="addLetter('y')">y</span>
+        <span class="unused" onclick="addLetter('u')">u</span>
+        <span class="unused" onclick="addLetter('i')">i</span>
+        <span class="unused" onclick="addLetter('o')">o</span>
+        <span class="unused" onclick="addLetter('p')">p</span>
+        <br>
+        <span class="unused" onclick="addLetter('a')">a</span>
+        <span class="unused" onclick="addLetter('s')">s</span>
+        <span class="unused" onclick="addLetter('d')">d</span>
+        <span class="unused" onclick="addLetter('f')">f</span>
+        <span class="unused" onclick="addLetter('g')">g</span>
+        <span class="unused" onclick="addLetter('h')">h</span>
+        <span class="unused" onclick="addLetter('j')">j</span>
+        <span class="unused" onclick="addLetter('k')">k</span>
+        <span class="unused" onclick="addLetter('l')">l</span>
+        <br>
+        <span class="unused" onclick="addLetter('z')">z</span>
+        <span class="unused" onclick="addLetter('x')">x</span>
+        <span class="unused" onclick="addLetter('c')">c</span>
+        <span class="unused" onclick="addLetter('v')">v</span>
+        <span class="unused" onclick="addLetter('b')">b</span>
+        <span class="unused" onclick="addLetter('n')">n</span>
+        <span class="unused" onclick="addLetter('m')">m</span> -->
+
         {% for letter, status in letter_status.items %}
             <span class="{{ status }}" onclick="addLetter('{{ letter }}')">{{ letter }}</span>
         {% endfor %}
