@@ -165,9 +165,10 @@
                 &nbsp;&nbsp;&nbsp;&nbsp;
             {% endif %}
             {% if forloop.counter == 19 %}
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             {% endif %}
         {% endfor %}
+        <span class="unused" onclick="deleteLetter()">⌫</span>
     </div>
     
 
@@ -193,6 +194,11 @@
             if (input.value.length < 5) {
                 input.value += letter;
             }
+        }
+
+        function deleteLetter() {
+            const input = document.getElementById('guess-input');
+            input.value = input.value.slice(0, -1);
         }
     </script>
 </body>
