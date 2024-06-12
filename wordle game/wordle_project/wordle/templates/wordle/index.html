@@ -175,7 +175,7 @@
         <span class="unused" onclick="addLetter('n')">n</span>
         <span class="unused" onclick="addLetter('m')">m</span> -->
 
-        {% for letter, status in letter_status.items %}
+        {% for letter, status in letter_status.items %}      <!-- #@! 여기 추가 ... -->
             <span class="{{ status }}" onclick="addLetter('{{ letter }}')">{{ letter }}</span>
         {% endfor %}
     </div>

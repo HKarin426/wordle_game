@@ -1,10 +1,23 @@
 import random
 import string
 import requests
+import pandas as pd  # list 다시 만들기 위해서 DataFrame
 from django.shortcuts import render, redirect
 
 # 1. 단어 리스트 준비
-word_list = ["apple", "grape", "berry", "melon", "lemon", "mango", "watch", "crane", "blush", "flint", "glove", "jumpy", "knack", "plumb", "quash", "sword"]
+#word_list = ["apple", "grape", "berry", "melon", "lemon", "mango", "watch", "crane", "blush", "flint", "glove", "jumpy", "knack", "plumb", "quash", "sword"]
+
+# #@! 20240612
+# 윈도우 다운로드 폴더 경로에 있는 엑셀 파일 경로
+file_path = r'C:\Users\user\Downloads\11sucsucwordsmaster1.xlsx'
+
+# 엑셀 파일을 데이터프레임으로 읽어오기
+df = pd.read_excel(file_path, engine='openpyxl', header=None)
+
+# DataFrame을 리스트로 변환 후 평탄화
+data_list = df.values.flatten().tolist()
+
+word_list = data_list
 
 #남은 알파벳 초기화
 keyboard_arr = { 'arr1' : list("qwertyuiop"),
