@@ -1,12 +1,25 @@
 # views.py
-from django.shortcuts import render, redirect
+#from django.shortcuts import render, redirect  # 중복 패키지 삭제
+import pandas as pd
 import random
 import string
 import requests
 from django.shortcuts import render, redirect
 
+#word_list = ['tough', 'print', 'pilot', 'spend', 'board', 'count', 'march', 'topic', 'slice', 'above']
+
+# #@! 20240612
 # 1. 단어 리스트 준비
-word_list = ['tough', 'print', 'pilot', 'spend', 'board', 'count', 'march', 'topic', 'slice', 'above']
+file_path = r'C:\Users\user\Downloads\11sucsucwordsmaster1.xlsx'
+
+# 엑셀 파일을 데이터프레임으로 읽어오기
+df = pd.read_excel(file_path, engine='openpyxl', header=None)
+
+# DataFrame을 리스트로 변환 후 평탄화
+data_list = df.values.flatten().tolist()
+
+word_list = data_list
+
 
 # 남은 알파벳 초기화
 qwerty = ['q','w','e','r','t','y','u','i','o','p','a','s','d','f','g','h','j','k','l','z','x','c','v','b','n','m']  # qwerty 배열
