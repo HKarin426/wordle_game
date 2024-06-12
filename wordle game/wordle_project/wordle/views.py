@@ -1,13 +1,16 @@
+# views.py
+from django.shortcuts import render, redirect
 import random
 import string
 import requests
 from django.shortcuts import render, redirect
 
 # 1. 단어 리스트 준비
-word_list = ["apple", "grape", "berry", "melon", "lemon", "mango", "watch", "crane", "blush", "flint", "glove", "jumpy", "knack", "plumb", "quash", "sword"]
+word_list = ['tough', 'print', 'pilot', 'spend', 'board', 'count', 'march', 'topic', 'slice', 'above']
 
 # 남은 알파벳 초기화
-remaining_letters = list(string.ascii_lowercase)  # 알파벳 소문자 리스트
+qwerty = ['q','w','e','r','t','y','u','i','o','p','a','s','d','f','g','h','j','k','l','z','x','c','v','b','n','m']  # qwerty 배열
+remaining_letters = qwerty
 answer = random.choice(word_list)  # 정답 단어를 랜덤으로 선택
 attempts = 6  # 사용자에게 주어진 시도 횟수
 guesses = []  # 사용자가 입력한 단어들과 피드백을 저장하는 리스트
@@ -67,7 +70,6 @@ def index(request):
                         feedback.append(f'<span class="correct">{guess[i]}</span>')  # 🟢: 위치와 문자가 모두 일치
                         correct_letters.add(guess[i])
                         letter_status[guess[i]] = 'correct'
-
                     elif guess[i] in answer:
                         feedback.append(f'<span class="partial">{guess[i]}</span>')  # 🟡: 문자는 일치하나 위치가 다름
                         correct_letters.add(guess[i])
@@ -83,7 +85,7 @@ def index(request):
                     message = f"아쉽지만 모든 시도 횟수를 소진하셨습니다. 정답은 {answer} 입니다."
                     answer = random.choice(word_list)  # 새로운 게임을 위해 단어 재설정
                     attempts = 6  # 시도 횟수 재설정
-                    remaining_letters = list(string.ascii_lowercase)  # 남은 알파벳 재설정
+                    remaining_letters = qwerty  # 남은 알파벳 재설정
                     guesses = []  # 입력 내역 초기화
                     letter_status = {letter: 'unused' for letter in remaining_letters}  # 알파벳 상태 재설정
                     game_over = True  # 게임 종료 상태로 설정
@@ -102,7 +104,7 @@ def index(request):
         elif 'reset' in request.POST:  # 게임을 다시 시작할 때
             answer = random.choice(word_list)
             attempts = 6
-            remaining_letters = list(string.ascii_lowercase)
+            remaining_letters = qwerty
             guesses = []
             letter_status = {letter: 'unused' for letter in remaining_letters}
             game_over = False  # 게임 종료 상태 해제

@@ -6,7 +6,11 @@
         body {
             font-family: Arial, sans-serif;
             margin: 50px;
-            transition: background-color 0.3s, color 0.3s;  /* 테마 전환 시 부드럽게 변화하도록 설정 */
+            transition: background-color 0.3s, color 0.3s;
+            display: flex; /* 요소들을 수평 정렬하기 위해 Flexbox 레이아웃 사용 */
+            flex-direction: column; /* 요소들을 세로로 배열 */
+            align-items: center; /* 가로 정렬을 중앙으로 설정 */
+            justify-content: center; /* 세로 정렬을 중앙으로 설정 */
         }
         body.light-mode {
             background-color: white;
@@ -116,6 +120,9 @@
         .remaining-letters {
             margin-top: 20px;
         }
+        .inline-item {
+            display: inline-block;
+        }
     </style>
 </head>
 <body class="light-mode">
@@ -133,14 +140,19 @@
         <button type="submit" name="reset">다시하기</button>
     </form>
     <div class="explanation">
-        <p>🟢 : 위치와 문자가 모두 일치</p>
-        <p>🟡 : 문자는 일치하나 위치가 다름</p>
-        <p>⚫ : 문자가 일치하지 않음</p>
-        <p>⬜ : 아직 입력해보지 않은 알파벳</p>
+        <div class="inline-item">
+            <p>🟢 : 위치와 문자가 모두 일치</p>
+            <p>🟡 : 문자는 일치하나 위치가 다름</p>
+        </div>
+        <div class="inline-item">
+            <p>⚫ : 문자가 일치하지 않음</p>
+            <p>⬜ : 아직 입력해보지 않은 알파벳</p>
+        </div>
     </div>
+    
     <div class="guess-list">
         {% for guess in guesses %}
-            <p class="guess-item">{{ guess.feedback|safe }}</p>  <!-- guess.feedback을 안전하게 렌더링 -->
+            <p class="guess-item">{{ guess.feedback|safe }}</p>
         {% endfor %}
     </div>
     <p class="feedback">{{ message }}</p>
@@ -148,24 +160,33 @@
     <div class="remaining-letters">
         {% for letter, status in letter_status.items %}
             <span class="{{ status }}" onclick="addLetter('{{ letter }}')">{{ letter }}</span>
+            {% if forloop.counter == 10 or forloop.counter == 19 %}<br>{% endif %}
+            {% if forloop.counter == 10 %}
+                &nbsp;&nbsp;&nbsp;&nbsp;
+            {% endif %}
+            {% if forloop.counter == 19 %}
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            {% endif %}
         {% endfor %}
+        <span class="unused" onclick="deleteLetter()">⌫</span>
     </div>
+    
 
     <button class="theme-toggle" onclick="toggleTheme()">테마 변경</button>
 
     <script>
         function toggleTheme() {
             const body = document.body;
-            body.classList.toggle('light-mode');  // light-mode 클래스를 토글
-            body.classList.toggle('dark-mode');  // dark-mode 클래스를 토글
+            body.classList.toggle('light-mode');
+            body.classList.toggle('dark-mode');
             const theme = body.classList.contains('dark-mode') ? 'dark' : 'light';
-            localStorage.setItem('theme', theme);  // 선택한 테마를 localStorage에 저장
+            localStorage.setItem('theme', theme);
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            const savedTheme = localStorage.getItem('theme') || 'light';  // 저장된 테마를 가져옴
-            document.body.classList.remove('light-mode', 'dark-mode');  // 모든 테마 클래스를 제거
-            document.body.classList.add(savedTheme + '-mode');  // 저장된 테마를 적용
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.body.classList.remove('light-mode', 'dark-mode');
+            document.body.classList.add(savedTheme + '-mode');
         });
 
         function addLetter(letter) {
@@ -173,6 +194,11 @@
             if (input.value.length < 5) {
                 input.value += letter;
             }
+        }
+
+        function deleteLetter() {
+            const input = document.getElementById('guess-input');
+            input.value = input.value.slice(0, -1);
         }
     </script>
 </body>
