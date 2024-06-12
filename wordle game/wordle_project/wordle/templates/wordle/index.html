@@ -131,7 +131,7 @@
     {% if not game_over %}
     <form method="post">
         {% csrf_token %}
-        <input type="text" id="guess-input" name="guess" maxlength="5" required>
+        <input type="text" id="guess-input" name="guess" maxlength="14" > <!-- 5글자 제한 풀기 전 코드 14개로 test -->
         <button type="submit" name="submit">시도하기</button>
     </form>
     {% endif %}
@@ -191,7 +191,8 @@
 
         function addLetter(letter) {
             const input = document.getElementById('guess-input');
-            if (input.value.length < 5) {
+            // #@! test 5글자 기준을 최대 14글자
+            if (input.value.length < 15) {    
                 input.value += letter;
             }
         }

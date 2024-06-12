@@ -20,6 +20,8 @@ data_list = df.values.flatten().tolist()
 
 word_list = data_list
 
+# 리스트 단어 중 제일 긴 WORD
+dl_max = len(max(data_list, key=len))
 
 # 남은 알파벳 초기화
 qwerty = ['q','w','e','r','t','y','u','i','o','p','a','s','d','f','g','h','j','k','l','z','x','c','v','b','n','m']  # qwerty 배열
@@ -37,21 +39,48 @@ def is_valid_word(word):
     return response.status_code == 200
 
 def index(request):
-    global remaining_letters, answer, attempts, guesses, game_over, letter_status
+    global remaining_letters, answer, attempts, guesses, game_over, letter_status, dl_max
 
-    if request.method == 'POST':  # POST 요청일 때
+    #initial_guess = 1  # guess의 초기 값 설정  #@!
+
+    if request.method == 'POST':  # POST 요청일 때  guess 사용자가 입력하는 갯수
         if 'guess' in request.POST and not game_over:
             guess = request.POST['guess'].lower()  # 입력된 단어를 소문자로 변환
             
-            if len(guess) != 5:  # 단어 길이가 5자가 아니면 에러 메시지 반환
+
+            # 14글자가 아니면 message
+            if len(guess) != dl_max:  # 액셀파일 중 제일 긴 단어기준 # << 바꿈 단어 길이가 5자가 아니면 에러 메시지 반환 
                 return render(request, 'wordle/index.html', {
-                    'message': '5개의 알파벳을 사용하는 단어를 입력해주세요.',
+                    'message': '글자수가 아닙니다. 밀크T 리스트 중의 사용하는 영어 단어를 입력해주세요.',
                     'remaining_letters': remaining_letters,
                     'attempts': attempts,
                     'guesses': guesses,
                     'game_over': game_over,
                     'letter_status': letter_status
                 })
+            
+            # 'message': '밀크T 리스트 중의 사용하는 영어 단어를 입력해주세요.',
+            
+            # # 14글자가 아니면 안됨.
+            # if len(guess) <= dl_max:  # 액셀파일 중 제일 긴 단어기준 # << 바꿈 단어 길이가 5자가 아니면 에러 메시지 반환 
+            #     return render(request, 'wordle/index.html', {
+            #         'message': '글자수가 맞지 않습니다.',
+            #         'remaining_letters': remaining_letters,
+            #         'attempts': attempts,
+            #         'guesses': guesses,
+            #         'game_over': game_over,
+            #         'letter_status': letter_status
+            #     })
+            
+            # if len(answer) == dl_max:  # 14 = 14 액셀파일 중 제일 긴 단어기준 # << 바꿈 단어 길이가 5자가 아니면 에러 메시지 반환 
+            #     return render(request, 'wordle/index.html', {
+            #         'message': '글자수는 맞습니다.',
+            #         'remaining_letters': remaining_letters,
+            #         'attempts': attempts,
+            #         'guesses': guesses,
+            #         'game_over': game_over,
+            #         'letter_status': letter_status
+            #     })
 
             if not is_valid_word(guess):  # 단어가 유효하지 않으면 에러 메시지 반환
                 return render(request, 'wordle/index.html', {
@@ -64,7 +93,7 @@ def index(request):
                 })
 
             if guess == answer:  # 사용자가 정답을 맞춘 경우
-                feedback = ''.join([f'<span class="correct">{guess[i]}</span>' for i in range(5)])
+                feedback = ''.join([f'<span class="correct">{guess[i]}</span>' for i in range(dl_max)])  # #@! range(5) dl_max
                 guesses.append({'guess': guess, 'feedback': feedback})
                 game_over = True  # 게임 종료 상태로 설정
                 return render(request, 'wordle/index.html', {
@@ -78,7 +107,7 @@ def index(request):
             else:
                 feedback = []
                 correct_letters = set()
-                for i in range(5):
+                for i in range(14):                   # #@! dl_max
                     if guess[i] == answer[i]:
                         feedback.append(f'<span class="correct">{guess[i]}</span>')  # 🟢: 위치와 문자가 모두 일치
                         correct_letters.add(guess[i])
@@ -94,6 +123,7 @@ def index(request):
                  
                 attempts -= 1  # 시도 횟수 감소
                 guesses.append({'guess': guess, 'feedback': ''.join(feedback)})  # 사용자의 입력과 피드백을 리스트에 추가
+                
                 if attempts == 0:  # 시도 횟수가 모두 소진된 경우
                     message = f"아쉽지만 모든 시도 횟수를 소진하셨습니다. 정답은 {answer} 입니다."
                     answer = random.choice(word_list)  # 새로운 게임을 위해 단어 재설정
@@ -119,6 +149,7 @@ def index(request):
             attempts = 6
             remaining_letters = qwerty
             guesses = []
+            #initial_guess = 1     #@! 추가
             letter_status = {letter: 'unused' for letter in remaining_letters}
             game_over = False  # 게임 종료 상태 해제
             return redirect('index')
@@ -127,6 +158,7 @@ def index(request):
         'remaining_letters': remaining_letters,
         'attempts': attempts,
         'guesses': guesses,
+        # 'initial_guess': initial_guess,     #@! 추가
         'letter_status': letter_status,
         'game_over': game_over
     })
