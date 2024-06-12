@@ -3,7 +3,6 @@ from django.shortcuts import render, redirect
 import random
 import string
 import requests
-from django.shortcuts import render, redirect
 
 # 1. 단어 리스트 준비
 word_list = ['tough', 'print', 'pilot', 'spend', 'board', 'count', 'march', 'topic', 'slice', 'above']
