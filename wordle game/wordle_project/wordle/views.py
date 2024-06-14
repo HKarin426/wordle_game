@@ -82,7 +82,7 @@ def index(request):
                     'letter_status': letter_status
                 })
 
-            if not is_valid_word(guess) and guess not in load_excel: # 단어가 유효하지 않으면 에러 메시지 반환 # word_list
+            if not is_valid_word(guess): # #@! and guess not in load_excel: # 단어가 유효하지 않으면 에러 메시지 반환 # word_list
                 return render(request, 'wordle/index.html', {
                     'message': '존재하지 않는 단어입니다.',
                     'remaining_letters': remaining_letters,
