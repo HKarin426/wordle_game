@@ -4,60 +4,18 @@ import requests
 import re
 import pdfplumber
 from django.shortcuts import render, redirect
+import pandas as pd
 
 # 1. 단어 리스트 준비
-
-def pdf_page(pdf_path):
-    with pdfplumber.open(pdf_path) as pdf:
-        last_page_number = len(pdf.pages)
-    return last_page_number
-
-def pdf_text(pdf_path, start_page, end_page):
-    text = []
-    with pdfplumber.open(pdf_path) as pdf:
-        for page_num in range(start_page, end_page):
-            page = pdf.pages[page_num]
-            text.append(page.extract_text())
-    return text
-
-def english(word_m):
-    english_words = []
-    for entry in word_m:
-        # 첫 번째 한글 문자가 나타나는 위치를 찾음
-        match = re.search(r'[가-힣]', entry)
-        if match:
-            # 한글 문자가 나타나는 위치를 기준으로 잘라냄
-            english_word = entry[:match.start()].strip()
-        else:
-            # 한글 문자가 없다면 전체를 사용
-            english_word = entry.strip()
-        english_words.append(english_word)
-    return english_words
-
-def word(text, p_page):
-    text_w = text[p_page].split('\n')[3:]
-    word_m = [text_w[i] for i in range(len(text_w)) if i % 3 == 0]
-    for i in range(len(word_m)):
-        english_word = english(word_m)    
-    return english_word
     
-# PDF 파일 경로
-pdf_path = r'C:\Users\user\Documents\bigdata\wordle_game-1\wordle game\wordle_project\word\T9EE61U15.pdf'
+# 엑셀 파일 경로
+file_path = r'C:\Users\user\Documents\bigdata\wordle_game-1\wordle game\wordle_project\word\fly_1.xlsx'
+# 엑셀 파일을 데이터프레임으로 읽어오기
+df = pd.read_excel(file_path, engine='openpyxl', header=None)
+# DataFrame을 리스트로 변환 후 평탄화
+word = df.values.flatten().tolist()
 
-start_page = 0  # 시작 페이지 번호 (0부터 시작)
-end_page = pdf_page(pdf_path) # 끝 페이지 번호 
-
-try:
-    text = pdf_text(pdf_path, start_page, end_page)
-except FileNotFoundError as e:
-    print(f"Error: {e}")
-
-all_word=[]
-for i in range(len(text)):
-    all_word += word(text,i)
-word_5 = [word for word in all_word if len(word) == 5]
-
-word_list = word_5
+word_list = word
 
 # 남은 알파벳 초기화
 qwerty = ['q','w','e','r','t','y','u','i','o','p','a','s','d','f','g','h','j','k','l','z','x','c','v','b','n','m']  # qwerty 배열
