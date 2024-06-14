@@ -1,3 +1,5 @@
+# load_excel () 함수부분 확인하기.
+
 import random
 import string
 import requests
@@ -5,9 +7,11 @@ import re
 import pdfplumber
 from django.shortcuts import render, redirect
 import pandas as pd
+from .models import load_excel
 
-# 전역 변수 설정
-#global_data_list = []
+# #@! 게임에 필요한 전역 변수들 설정
+answer = None
+qwerty = list('qwertyuiopasdfghjklzxcvbnm')
 
 # 리스트 word_list? 빈값에서 예외처리
 # try:
@@ -24,8 +28,7 @@ import pandas as pd
 def index(request):
     return render(request, 'index.html')
 
-def load_excel(request):
-    #global global_data_list  # 전역 변수로 사용할 변수 선언
+def load_excel(request):    
 
     if request.method == 'GET':
         file_name = request.GET.get('file_name')  # 클라이언트에서 전송된 파일명 받기
@@ -42,7 +45,7 @@ def load_excel(request):
                 return render(request, 'index.html', {'error_message': str(e)})
         else:
             return render(request, 'index.html', {'error_message': '파일명이 제공되지 않았습니다.'})
-    
+        
 # 엑셀 파일 경로
 #file_path = r'C:\Users\user\Documents\bigdata\wordle_game-1\wordle game\wordle_project\word\master_1.xlsx'
 # 엑셀 파일을 데이터프레임으로 읽어오기
@@ -53,7 +56,7 @@ def load_excel(request):
 # 남은 알파벳 초기화
 qwerty = ['q','w','e','r','t','y','u','i','o','p','a','s','d','f','g','h','j','k','l','z','x','c','v','b','n','m']  # qwerty 배열
 remaining_letters = qwerty
-answer = random.choice(load_excel)  # 정답 단어를 랜덤으로 선택
+# #@! answer = random.choice(load_excel())  # 정답 단어를 랜덤으로 선택
 attempts = 6  # 사용자에게 주어진 시도 횟수
 guesses = []  # 사용자가 입력한 단어들과 피드백을 저장하는 리스트
 game_over = False  # 게임 종료 상태를 나타내는 변수
@@ -65,7 +68,7 @@ def is_valid_word(word):
     response = requests.get(api_url)
     return response.status_code == 200
 
-def index(request):
+def index(request):    
     global remaining_letters, answer, attempts, guesses, game_over, letter_status#, global_data_list # #@! global_data_list 추가
 
     if request.method == 'POST':  # POST 요청일 때
@@ -126,7 +129,7 @@ def index(request):
                 guesses.append({'guess': guess, 'feedback': ''.join(feedback)})  # 사용자의 입력과 피드백을 리스트에 추가
                 if attempts == 0:  # 시도 횟수가 모두 소진된 경우
                     message = f"아쉽지만 모든 시도 횟수를 소진하셨습니다. 정답은 {answer} 입니다."
-                    answer = random.choice(load_excel)  # 새로운 게임을 위해 단어 재설정 # #@! word_list
+                    answer = random.choice(load_excel())  # 새로운 게임을 위해 단어 재설정 # #@! word_list
                     attempts = 6  # 시도 횟수 재설정
                     remaining_letters = qwerty  # 남은 알파벳 재설정
                     guesses = []  # 입력 내역 초기화
@@ -152,7 +155,17 @@ def index(request):
             letter_status = {letter: 'unused' for letter in remaining_letters}
             game_over = False  # 게임 종료 상태 해제
             return redirect('index')
-    
+    else:
+        if not answer:
+            answer = random.choice(load_excel)  # 정답이 없는 경우 새로운 단어 선택
+
+        return render(request, 'wordle/index.html', {
+            'remaining_letters': remaining_letters,
+            'attempts': attempts,
+            'guesses': guesses,
+            'letter_status': letter_status,
+            'game_over': game_over
+        })
     return render(request, 'wordle/index.html', {  # GET 요청일 때
         'remaining_letters': remaining_letters,
         'attempts': attempts,
