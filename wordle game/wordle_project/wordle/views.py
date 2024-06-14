@@ -6,19 +6,54 @@ import pdfplumber
 from django.shortcuts import render, redirect
 import pandas as pd
 
+# 전역 변수 설정
+#global_data_list = []
+
+# 리스트 word_list? 빈값에서 예외처리
+# try:
+#     answer = random.choice(global_data_list)
+# except IndexError:
+#     answer = None  # 또는 다른 처리 방법을 선택하여 처리할 수 있음
+
+# if answer is None:
+#     print("Cannot choose from an empty sequence")
+# else:
+#     print("Selected answer:", answer)
+
 # 1. 단어 리스트 준비
+def index(request):
+    return render(request, 'index.html')
+
+def load_excel(request):
+    #global global_data_list  # 전역 변수로 사용할 변수 선언
+
+    if request.method == 'GET':
+        file_name = request.GET.get('file_name')  # 클라이언트에서 전송된 파일명 받기
+        if file_name:
+            file_path = r'D:\Git_Project_s20240610\wordle_game\wordle game\wordle_project\word\{}.xlsx'.format(file_name) # {file_name}.xlsx
+            
+            # 엑셀 파일을 데이터프레임으로 읽어오기
+            try:
+                df = pd.read_excel(file_path, engine='openpyxl', header=None)
+                data_list = df.values.flatten().tolist()
+                #global_data_list = data_list  # 전역 변수에 할당 #@!
+                return render(request, 'index.html', {'data_list': data_list})
+            except Exception as e:
+                return render(request, 'index.html', {'error_message': str(e)})
+        else:
+            return render(request, 'index.html', {'error_message': '파일명이 제공되지 않았습니다.'})
     
 # 엑셀 파일 경로
-file_path = r'C:\Users\user\Documents\bigdata\wordle_game-1\wordle game\wordle_project\word\master_1.xlsx'
+#file_path = r'C:\Users\user\Documents\bigdata\wordle_game-1\wordle game\wordle_project\word\master_1.xlsx'
 # 엑셀 파일을 데이터프레임으로 읽어오기
-df = pd.read_excel(file_path, engine='openpyxl', header=None)
+#df = pd.read_excel(file_path, engine='openpyxl', header=None)
 # DataFrame을 리스트로 변환 후 평탄화
-word_list = df.values.flatten().tolist()
+#word_list = df.values.flatten().tolist()
 
 # 남은 알파벳 초기화
 qwerty = ['q','w','e','r','t','y','u','i','o','p','a','s','d','f','g','h','j','k','l','z','x','c','v','b','n','m']  # qwerty 배열
 remaining_letters = qwerty
-answer = random.choice(word_list)  # 정답 단어를 랜덤으로 선택
+answer = random.choice(load_excel)  # 정답 단어를 랜덤으로 선택
 attempts = 6  # 사용자에게 주어진 시도 횟수
 guesses = []  # 사용자가 입력한 단어들과 피드백을 저장하는 리스트
 game_over = False  # 게임 종료 상태를 나타내는 변수
@@ -31,7 +66,7 @@ def is_valid_word(word):
     return response.status_code == 200
 
 def index(request):
-    global remaining_letters, answer, attempts, guesses, game_over, letter_status
+    global remaining_letters, answer, attempts, guesses, game_over, letter_status#, global_data_list # #@! global_data_list 추가
 
     if request.method == 'POST':  # POST 요청일 때
         if 'guess' in request.POST and not game_over:
@@ -47,7 +82,7 @@ def index(request):
                     'letter_status': letter_status
                 })
 
-            if not is_valid_word(guess) and guess not in word_list: # 단어가 유효하지 않으면 에러 메시지 반환
+            if not is_valid_word(guess) and guess not in load_excel: # 단어가 유효하지 않으면 에러 메시지 반환 # word_list
                 return render(request, 'wordle/index.html', {
                     'message': '존재하지 않는 단어입니다.',
                     'remaining_letters': remaining_letters,
@@ -91,7 +126,7 @@ def index(request):
                 guesses.append({'guess': guess, 'feedback': ''.join(feedback)})  # 사용자의 입력과 피드백을 리스트에 추가
                 if attempts == 0:  # 시도 횟수가 모두 소진된 경우
                     message = f"아쉽지만 모든 시도 횟수를 소진하셨습니다. 정답은 {answer} 입니다."
-                    answer = random.choice(word_list)  # 새로운 게임을 위해 단어 재설정
+                    answer = random.choice(load_excel)  # 새로운 게임을 위해 단어 재설정 # #@! word_list
                     attempts = 6  # 시도 횟수 재설정
                     remaining_letters = qwerty  # 남은 알파벳 재설정
                     guesses = []  # 입력 내역 초기화
@@ -110,7 +145,7 @@ def index(request):
                 })
 
         elif 'reset' in request.POST:  # 게임을 다시 시작할 때
-            answer = random.choice(word_list)
+            answer = random.choice(load_excel)       # #@! word_list
             attempts = 6
             remaining_letters = qwerty
             guesses = []

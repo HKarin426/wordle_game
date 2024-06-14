@@ -1,6 +1,7 @@
 <!DOCTYPE html>
-<html>
+<html lang="ko">
 <head>
+    <meta charset="UTF-8">
     <title>Wordle Game</title>
     <style>
         body {
@@ -211,36 +212,27 @@
 <body class="light-mode">
     <h1>Wordle Game</h1>
     <br>
-    <!-- 밀크T 학년별로 단어장이 없어서 master, 그런 기준으로 변환 예정 -->
-    <div class="button-container">
-        <button type="submit" name="elementary1" class="grade-button grade-1">1학년</button>
-        <button type="submit" name="elementary2" class="grade-button grade-2">2학년</button>
-        <button type="submit" name="elementary3" class="grade-button grade-3">3학년</button>
-        <button type="submit" name="elementary4" class="grade-button grade-4">4학년</button>
-        <button type="submit" name="elementary5" class="grade-button grade-5">5학년</button>
-        <button type="submit" name="elementary6" class="grade-button grade-6">6학년</button>
-    </div>
-    <br><br><br>
+
     <div class="dropdown">
         <button class="dropbtn"> 
-          <span class="dropbtn_icon">학년별</span>
+          <span class="dropbtn_icon">난이도</span>
           Milk T
         </button>
         <div class="dropdown-content">
-          <a href="#">beyond(쏙쏙 words)</a>
-          <a href="#">fly1</a>
-          <a href="#">fly 2</a>
-          <a href="#">jump1</a>
-          <a href="#">jump2</a>
-          <a href="#">master1</a>
-          <a href="#">master2</a>
-          <a href="#">run</a>
-          <a href="#">start</a>
-          <a href="#">walk</a>
+            <div onclick="loadFile('beyond')"><a>beyond(쏙쏙 words)</a></div>
+            <div onclick="loadFile('fly_1')"><a>fly 1</a></div>
+            <div onclick="loadFile('fly_2')"><a>fly 2</a></div>
+            <div onclick="loadFile('jump_1')"><a>jump 1</a></div>
+            <div onclick="loadFile('jump_2')"><a>jump 2</a></div>
+            <div onclick="loadFile('master_1')"><a>master 1</a></div>
+            <div onclick="loadFile('master_2')"><a>master 2</a></div>
+            <div onclick="loadFile('run')"><a>run</a></div>
+            <div onclick="loadFile('start')"><a>start</a></div>
+            <div onclick="loadFile('walk')"><a>walk</a></div>
         </div>
-      </div> 
+    </div> 
       
-
+    <br><br><br>
     <p>남은 시도: {{ attempts }}</p>
     {% if not game_over %}
     <form method="post">
@@ -315,6 +307,21 @@
             const input = document.getElementById('guess-input');
             input.value = input.value.slice(0, -1);
         }
+
+        
+        function loadFile(file_name) {
+            // AJAX를 사용하여 서버로 선택한 파일명 전송
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', '/load_excel/?file_name=' + file_name, true);
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    // 서버에서 받은 데이터로 화면 업데이트
+                    document.getElementById("result").innerHTML = xhr.responseText;
+                }
+            };
+            xhr.send();
+        }
+    
     </script>
 </body>
 </html>
