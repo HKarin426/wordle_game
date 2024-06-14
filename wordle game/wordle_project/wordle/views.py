@@ -1,11 +1,19 @@
-# views.py
-from django.shortcuts import render, redirect
 import random
 import string
 import requests
+import re
+import pdfplumber
+from django.shortcuts import render, redirect
+import pandas as pd
 
 # 1. 단어 리스트 준비
-word_list = ['tough', 'print', 'pilot', 'spend', 'board', 'count', 'march', 'topic', 'slice', 'above']
+    
+# 엑셀 파일 경로
+file_path = r'C:\Users\user\Documents\bigdata\wordle_game-1\wordle game\wordle_project\word\master_1.xlsx'
+# 엑셀 파일을 데이터프레임으로 읽어오기
+df = pd.read_excel(file_path, engine='openpyxl', header=None)
+# DataFrame을 리스트로 변환 후 평탄화
+word_list = df.values.flatten().tolist()
 
 # 남은 알파벳 초기화
 qwerty = ['q','w','e','r','t','y','u','i','o','p','a','s','d','f','g','h','j','k','l','z','x','c','v','b','n','m']  # qwerty 배열
@@ -39,7 +47,7 @@ def index(request):
                     'letter_status': letter_status
                 })
 
-            if not is_valid_word(guess):  # 단어가 유효하지 않으면 에러 메시지 반환
+            if not is_valid_word(guess) and guess not in word_list: # 단어가 유효하지 않으면 에러 메시지 반환
                 return render(request, 'wordle/index.html', {
                     'message': '존재하지 않는 단어입니다.',
                     'remaining_letters': remaining_letters,
@@ -69,6 +77,7 @@ def index(request):
                         feedback.append(f'<span class="correct">{guess[i]}</span>')  # 🟢: 위치와 문자가 모두 일치
                         correct_letters.add(guess[i])
                         letter_status[guess[i]] = 'correct'
+
                     elif guess[i] in answer:
                         feedback.append(f'<span class="partial">{guess[i]}</span>')  # 🟡: 문자는 일치하나 위치가 다름
                         correct_letters.add(guess[i])
