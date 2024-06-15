@@ -33,7 +33,7 @@ def load_excel(request):
     if request.method == 'GET':
         file_name = request.GET.get('file_name')  # 클라이언트에서 전송된 파일명 받기
         if file_name:
-            file_path = r'D:\Git_Project_s20240610\wordle_game\wordle game\wordle_project\word\{}.xlsx'.format(file_name) # {file_name}.xlsx
+            file_path = r'K:\Git_Project_s20240610\wordle_game\wordle game\wordle_project\word\{}.xlsx'.format(file_name) # {file_name}.xlsx
             
             # 엑셀 파일을 데이터프레임으로 읽어오기
             try:
@@ -56,7 +56,7 @@ def load_excel(request):
 # 남은 알파벳 초기화
 qwerty = ['q','w','e','r','t','y','u','i','o','p','a','s','d','f','g','h','j','k','l','z','x','c','v','b','n','m']  # qwerty 배열
 remaining_letters = qwerty
-# #@! answer = random.choice(load_excel())  # 정답 단어를 랜덤으로 선택
+answer = random.choice(load_excel())  # 정답 단어를 랜덤으로 선택
 attempts = 6  # 사용자에게 주어진 시도 횟수
 guesses = []  # 사용자가 입력한 단어들과 피드백을 저장하는 리스트
 game_over = False  # 게임 종료 상태를 나타내는 변수
@@ -148,7 +148,7 @@ def index(request):
                 })
 
         elif 'reset' in request.POST:  # 게임을 다시 시작할 때
-            answer = random.choice(load_excel)       # #@! word_list
+            answer = random.choice(load_excel())       # #@! word_list
             attempts = 6
             remaining_letters = qwerty
             guesses = []
@@ -157,7 +157,7 @@ def index(request):
             return redirect('index')
     else:
         if not answer:
-            answer = random.choice(load_excel)  # 정답이 없는 경우 새로운 단어 선택
+            answer = random.choice(load_excel())  # 정답이 없는 경우 새로운 단어 선택
 
         return render(request, 'wordle/index.html', {
             'remaining_letters': remaining_letters,
