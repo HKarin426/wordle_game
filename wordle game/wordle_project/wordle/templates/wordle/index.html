@@ -219,7 +219,7 @@
           Milk T
         </button>
         <div class="dropdown-content">
-            <div onclick="loadFile('beyond')"><a>beyond(쏙쏙 words)</a></div>
+            <a onclick="loadFile('beyond')">beyond(쏙쏙 words)</a>
             <div onclick="loadFile('fly_1')"><a>fly 1</a></div>
             <div onclick="loadFile('fly_2')"><a>fly 2</a></div>
             <div onclick="loadFile('jump_1')"><a>jump 1</a></div>
@@ -307,21 +307,19 @@
             const input = document.getElementById('guess-input');
             input.value = input.value.slice(0, -1);
         }
+        // xhr.open('GET', '/load_excel/?file_name=' + file_name, true);
 
-        
         function loadFile(file_name) {
-            // AJAX를 사용하여 서버로 선택한 파일명 전송
             var xhr = new XMLHttpRequest();
-            xhr.open('GET', '/load_excel/?file_name=' + file_name, true);
+            xhr.open('GET', '?file_name=' + file_name, true);  // Django URL 패턴에 맞게 설정
             xhr.onreadystatechange = function() {
                 if (xhr.readyState == 4 && xhr.status == 200) {
-                    // 서버에서 받은 데이터로 화면 업데이트
                     document.getElementById("result").innerHTML = xhr.responseText;
                 }
             };
             xhr.send();
         }
-    
+
     </script>
 </body>
 </html>
