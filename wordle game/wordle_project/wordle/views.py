@@ -4,7 +4,9 @@ import requests
 import pandas as pd
 from django.shortcuts import render, redirect
 
-# 단어 리스트 준비
+# 1. 단어 리스트 준비
+
+# 엑셀 파일에서 단어 리스트를 로드하는 함수에 대한 설명
 def load_excel(file_name):
     file_path = r'K:\Git_Project_s20240610\wordle_game\wordle_game\wordle game\wordle_project\word\{}.xlsx'.format(file_name)
     
@@ -38,17 +40,31 @@ def index(request):
         if 'load_file' in request.POST:
             file_name = request.POST['file_name']
             word_list = load_excel(file_name)
+            message : f'밀크T {'file_name'} 단어장을 선택 하셨습니다.'
+            
             if isinstance(word_list, str):  # Error message returned
-                return render(request, 'wordle/index.html', {'error_message': word_list})
+                return render(request, 'wordle/index.html', {
+                    'error_message': word_list,
+                })
+                
             if not word_list:
                 return render(request, 'wordle/index.html', {'error_message': '파일이 비어있거나 잘못된 형식입니다.'})
+            
             answer = random.choice(word_list)
             attempts = 6
             remaining_letters = qwerty
             guesses = []
             letter_status = {letter: 'unused' for letter in remaining_letters}
             game_over = False
-            return redirect('index')
+            message = f'밀크T {file_name} 단어장을 선택 하셨습니다.'
+            return render(request, 'wordle/index.html', {
+                'message': message,
+                'remaining_letters': remaining_letters,
+                'attempts': attempts,
+                'guesses': guesses,
+                'letter_status': letter_status,
+                'game_over': game_over
+            })
         
         if 'guess' in request.POST and not game_over:
             guess = request.POST['guess'].lower()
@@ -137,6 +153,7 @@ def index(request):
             answer = random.choice(word_list)
 
         return render(request, 'wordle/index.html', {
+            'message': '난이도 Milk T 단어장을 선택해 주세요.',
             'remaining_letters': remaining_letters,
             'attempts': attempts,
             'guesses': guesses,
@@ -144,6 +161,7 @@ def index(request):
             'game_over': game_over
         })
     return render(request, 'wordle/index.html', {
+        'message': '난이도 Milk T 단어장을 선택해 주세요.',
         'remaining_letters': remaining_letters,
         'attempts': attempts,
         'guesses': guesses,
