@@ -5,22 +5,6 @@ import pandas as pd
 from django.shortcuts import render, redirect
 
 # 단어 리스트 준비
-# def load_excel(request):
-#     file_name = request.GET.get('file_name')
-#     if file_name:
-#         file_path = r'K:\Git_Project_s20240610\wordle_game\wordle_game\wordle game\wordle_project\word\{}.xlsx'.format(file_name)  # {file_name}.xlsx
-        
-#         try:
-#             df = pd.read_excel(file_path, engine='openpyxl', header=None)
-#             data_list = df.values.flatten().tolist()
-#             return JsonResponse({'data_list': data_list})
-#         except Exception as e:
-#             return JsonResponse({'error_message': str(e)})
-#     else:
-#         return JsonResponse({'error_message': '파일명이 제공되지 않았습니다.'})
-
-#word_list = load_excel(data_list)
-
 def load_excel(file_name):
     file_path = r'K:\Git_Project_s20240610\wordle_game\wordle_game\wordle game\wordle_project\word\{}.xlsx'.format(file_name)
     
@@ -40,7 +24,6 @@ def is_valid_word(word):
 # 글로벌 변수 설정
 qwerty = ['q','w','e','r','t','y','u','i','o','p','a','s','d','f','g','h','j','k','l','z','x','c','v','b','n','m']
 remaining_letters = qwerty
-#answer = random.choice(word_list)
 word_list = []
 answer = ""
 attempts = 6
@@ -50,17 +33,6 @@ letter_status = {letter: 'unused' for letter in remaining_letters}
 
 def index(request):
     global remaining_letters, answer, attempts, guesses, game_over, letter_status, word_list
-
-    # # 엑셀 파일 로드
-    # if not word_list:
-    #     file_name = 'master_1'  # 파일명을 지정합니다.
-    #     result = load_excel(file_name)
-    #     if isinstance(result, str):
-    #         return render(request, 'wordle/index.html', {'error_message': result})
-    #     word_list = result
-    
-    # if not answer:
-    #     answer = random.choice(word_list)
 
     if request.method == 'POST':
         if 'load_file' in request.POST:
