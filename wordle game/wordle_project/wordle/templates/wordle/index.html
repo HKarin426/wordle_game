@@ -130,34 +130,6 @@
             flex-direction: row;
         }
 
-        .grade-button {
-            margin-right: 10px; /* 버튼 사이의 간격 조절 */
-        }
-
-        .grade-1 {
-            background-color: #ff0000; /* 1학년 버튼 색상 */
-        }
-
-        .grade-2 {
-            background-color: #00ff00; /* 2학년 버튼 색상 */
-        }
-
-        .grade-3 {
-            background-color: #0000ff; /* 3학년 버튼 색상 */
-        }
-
-        .grade-4 {
-            background-color: #2f00ff; /* 4학년 버튼 색상 */
-        }
-
-        .grade-5 {
-            background-color: #00ffff; /* 5학년 버튼 색상 */
-        }
-
-        .grade-6 {
-            background-color: #ff00ff; /* 6학년 버튼 색상 */
-        }
-
         @import url('https://fonts.googleapis.com/icon?family=Material+Icons');
 
         .dropdown{
@@ -211,33 +183,38 @@
 </head>
 <body class="light-mode">
     <h1>Wordle Game</h1>
-    <br>
 
+    <br><br><br>
     <div class="dropdown">
-        <button class="dropbtn"> 
+        <button class="dropbtn">
           <span class="dropbtn_icon">난이도</span>
           Milk T
         </button>
         <div class="dropdown-content">
-            <a onclick="loadFile('beyond')">beyond(쏙쏙 words)</a>
-            <div onclick="loadFile('fly_1')"><a>fly 1</a></div>
-            <div onclick="loadFile('fly_2')"><a>fly 2</a></div>
-            <div onclick="loadFile('jump_1')"><a>jump 1</a></div>
-            <div onclick="loadFile('jump_2')"><a>jump 2</a></div>
-            <div onclick="loadFile('master_1')"><a>master 1</a></div>
-            <div onclick="loadFile('master_2')"><a>master 2</a></div>
-            <div onclick="loadFile('run')"><a>run</a></div>
-            <div onclick="loadFile('start')"><a>start</a></div>
-            <div onclick="loadFile('walk')"><a>walk</a></div>
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="load_file" value="1">
+                <a onclick="document.getElementById('file_name').value='beyond'; this.closest('form').submit();">beyond(쏙쏙 words)</a>
+                <a onclick="document.getElementById('file_name').value='fly_1'; this.closest('form').submit();">fly 1</a>
+                <a onclick="document.getElementById('file_name').value='fly_2'; this.closest('form').submit();">fly 2</a>
+                <a onclick="document.getElementById('file_name').value='jump_1'; this.closest('form').submit();">jump 1</a>
+                <a onclick="document.getElementById('file_name').value='jump_2'; this.closest('form').submit();">jump 2</a>
+                <a onclick="document.getElementById('file_name').value='master_1'; this.closest('form').submit();">master 1</a>
+                <a onclick="document.getElementById('file_name').value='master_2'; this.closest('form').submit();">master 2</a>
+                <a onclick="document.getElementById('file_name').value='run'; this.closest('form').submit();">run</a>
+                <a onclick="document.getElementById('file_name').value='start'; this.closest('form').submit();">start</a>
+                <a onclick="document.getElementById('file_name').value='walk'; this.closest('form').submit();">walk</a>
+                <input type="hidden" id="file_name" name="file_name">
+            </form>
         </div>
-    </div> 
+    </div>
       
     <br><br><br>
     <p>남은 시도: {{ attempts }}</p>
     {% if not game_over %}
     <form method="post">
         {% csrf_token %}
-        <input type="text" id="guess-input" name="guess" maxlength="14" > <!-- 5글자 제한 풀기 전 코드 14개로 test -->
+        <input type="text" id="guess-input" name="guess" maxlength="5" required>
         <button type="submit" name="submit">시도하기</button>
     </form>
     {% endif %}
@@ -298,7 +275,7 @@
         function addLetter(letter) {
             const input = document.getElementById('guess-input');
             // #@! test 5글자 기준을 최대 14글자
-            if (input.value.length < 15) {    
+            if (input.value.length < 5) {    
                 input.value += letter;
             }
         }
@@ -307,14 +284,22 @@
             const input = document.getElementById('guess-input');
             input.value = input.value.slice(0, -1);
         }
-        // xhr.open('GET', '/load_excel/?file_name=' + file_name, true);
+        // xhr.open('GET', '?file_name=' + file_name, true);  // Django URL 패턴에 맞게 설정
+            
 
         function loadFile(file_name) {
             var xhr = new XMLHttpRequest();
-            xhr.open('GET', '?file_name=' + file_name, true);  // Django URL 패턴에 맞게 설정
+            xhr.open('GET', '/load_excel/?file_name=' + file_name, true);
             xhr.onreadystatechange = function() {
                 if (xhr.readyState == 4 && xhr.status == 200) {
-                    document.getElementById("result").innerHTML = xhr.responseText;
+                    var response = JSON.parse(xhr.responseText);
+                    if (response.data_list) {
+                        alert('단어 리스트가 성공적으로 로드되었습니다.');
+                        // 단어 리스트를 게임에 반영하는 로직을 추가해야 합니다.
+                        // 예를 들어, 서버로부터 새로운 단어 리스트를 받아와 게임을 초기화합니다.
+                    } else {
+                        alert('단어 리스트를 로드하는 중 오류가 발생했습니다.');
+                    }
                 }
             };
             xhr.send();
