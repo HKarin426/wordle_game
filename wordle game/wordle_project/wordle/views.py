@@ -6,9 +6,7 @@ from django.shortcuts import render, redirect
 
 # 엑셀 파일에서 단어 리스트를 로드하는 함수
 def load_excel_from_github(file_name):
-
-    url = f'https:\\github.com\\HKarin426\\wordle_game\\tree\\d6429987ab1a3be639e2686ef834e2e0151c0ff9\\wordle%20game\\wordle_project\\word\\{file_name}.xlsx'
-
+    url = f'https://github.com/HKarin426/wordle_game/raw/d6429987ab1a3be639e2686ef834e2e0151c0ff9/wordle%20game/wordle_project/word/{file_name}.xlsx'
     try:
         df = pd.read_excel(url, engine='openpyxl', header=None)
         data_list = df.values.flatten().tolist()
@@ -37,9 +35,9 @@ def index(request):
 
     if request.method == 'POST':
         if 'load_file' in request.POST:
-            file_url = request.POST['file_url']
-            word_list = load_excel_from_github(file_url)
-            message = f'밀크T 초등 {file_url} 단어장을 선택 하셨습니다.'
+            file_name = request.POST['file_name']
+            word_list = load_excel_from_github(file_name)
+            message = f'밀크T 초등 {file_name} 단어장을 선택 하셨습니다.'
             
             if isinstance(word_list, str):  # Error message returned
                 return render(request, 'wordle/index.html', {
@@ -55,7 +53,7 @@ def index(request):
             guesses = []
             letter_status = {letter: 'unused' for letter in remaining_letters}
             game_over = False
-            message = f'밀크T 초등 {file_url} 단어장을 선택 하셨습니다.'
+            message = f'밀크T 초등 {file_name} 단어장을 선택 하셨습니다.'
             return render(request, 'wordle/index.html', {
                 'message': message,
                 'remaining_letters': remaining_letters,
