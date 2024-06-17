@@ -76,7 +76,7 @@ def index(request):
                     'letter_status': letter_status
                 })
 
-            if not is_valid_word(guess):
+            if not is_valid_word(guess) and guess not in word_list:
                 return render(request, 'wordle/index.html', {
                     'message': '존재하지 않는 단어입니다.',
                     'remaining_letters': remaining_letters,
