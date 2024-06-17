@@ -6,7 +6,7 @@ from django.shortcuts import render, redirect
 
 # 엑셀 파일에서 단어 리스트를 로드하는 함수
 def load_excel_from_github(file_name):
-    url = f'https://github.com/HKarin426/wordle_game/raw/d6429987ab1a3be639e2686ef834e2e0151c0ff9/wordle%20game/wordle_project/word/{file_name}.xlsx'
+    url = f'https://github.com/HKarin426/wordle_game/raw/e22e496de3c084505fa58ebcfd3890aab83a0a9e/wordle%20game/wordle_project/word/{file_name}.xlsx'
     try:
         df = pd.read_excel(url, engine='openpyxl', header=None)
         data_list = df.values.flatten().tolist()
@@ -29,9 +29,10 @@ attempts = 6
 guesses = []
 game_over = False
 letter_status = {letter: 'unused' for letter in remaining_letters}
+difficulty_selected = False
 
 def index(request):
-    global remaining_letters, answer, attempts, guesses, game_over, letter_status, word_list
+    global remaining_letters, answer, attempts, guesses, game_over, letter_status, word_list, difficulty_selected
 
     if request.method == 'POST':
         if 'load_file' in request.POST:
@@ -53,17 +54,29 @@ def index(request):
             guesses = []
             letter_status = {letter: 'unused' for letter in remaining_letters}
             game_over = False
-            message = f'밀크T 초등 {file_name} 단어장을 선택 하셨습니다.'
+            difficulty_selected = True
             return render(request, 'wordle/index.html', {
                 'message': message,
                 'remaining_letters': remaining_letters,
                 'attempts': attempts,
                 'guesses': guesses,
                 'letter_status': letter_status,
-                'game_over': game_over
+                'game_over': game_over,
+                'remaining_rows': range(6 - len(guesses))
             })
         
         if 'guess' in request.POST and not game_over:
+            if not difficulty_selected:
+                return render(request, 'wordle/index.html', {
+                    'message': '난이도를 선택해주세요.',
+                    'remaining_letters': remaining_letters,
+                    'attempts': attempts,
+                    'guesses': guesses,
+                    'game_over': game_over,
+                    'letter_status': letter_status,
+                    'remaining_rows': range(6 - len(guesses))
+                })
+
             guess = request.POST['guess'].lower()
             
             if len(guess) != 5:
@@ -73,7 +86,8 @@ def index(request):
                     'attempts': attempts,
                     'guesses': guesses,
                     'game_over': game_over,
-                    'letter_status': letter_status
+                    'letter_status': letter_status,
+                    'remaining_rows': range(6 - len(guesses))
                 })
 
             if not is_valid_word(guess) and guess not in word_list:
@@ -84,10 +98,11 @@ def index(request):
                     'guesses': guesses,
                     'game_over': game_over,
                     'letter_status': letter_status,
+                    'remaining_rows': range(6 - len(guesses))
                 })
 
             if guess == answer:
-                feedback = ''.join([f'<span class="correct">{guess[i]}</span>' for i in range(5)])
+                feedback = [{'char': guess[i], 'status': 'correct'} for i in range(5)]
                 guesses.append({'guess': guess, 'feedback': feedback})
                 game_over = True
                 return render(request, 'wordle/index.html', {
@@ -97,34 +112,30 @@ def index(request):
                     'guesses': guesses,
                     'game_over': game_over,
                     'letter_status': letter_status,
+                    'remaining_rows': range(6 - len(guesses))
                 })
             else:
                 feedback = []
                 correct_letters = set()
                 for i in range(5):
                     if guess[i] == answer[i]:
-                        feedback.append(f'<span class="correct">{guess[i]}</span>')
+                        feedback.append({'char': guess[i], 'status': 'correct'})
                         correct_letters.add(guess[i])
                         letter_status[guess[i]] = 'correct'
                     elif guess[i] in answer:
-                        feedback.append(f'<span class="partial">{guess[i]}</span>')
+                        feedback.append({'char': guess[i], 'status': 'partial'})
                         correct_letters.add(guess[i])
                         if letter_status[guess[i]] != 'correct':
                             letter_status[guess[i]] = 'partial'
                     else:
-                        feedback.append(f'<span class="wrong">{guess[i]}</span>')
+                        feedback.append({'char': guess[i], 'status': 'wrong'})
                         letter_status[guess[i]] = 'wrong'
                 
                 attempts -= 1
-                guesses.append({'guess': guess, 'feedback': ''.join(feedback)})
+                guesses.append({'guess': guess, 'feedback': feedback})
                 if attempts == 0:
                     message = f"아쉽지만 모든 시도 횟수를 소진하셨습니다. 정답은 {answer} 입니다."
-                    answer = random.choice(word_list)
-                    attempts = 6
-                    remaining_letters = qwerty
-                    guesses = []
-                    letter_status = {letter: 'unused' for letter in remaining_letters}
-                    game_over = True
+                    game_over = True  # 시도 횟수를 초기화하지 않음
                 else:
                     message = ""
 
@@ -134,7 +145,8 @@ def index(request):
                     'attempts': attempts,
                     'guesses': guesses,
                     'letter_status': letter_status,
-                    'game_over': game_over
+                    'game_over': game_over,
+                    'remaining_rows': range(6 - len(guesses))
                 })
 
         elif 'reset' in request.POST:
@@ -155,7 +167,8 @@ def index(request):
             'attempts': attempts,
             'guesses': guesses,
             'letter_status': letter_status,
-            'game_over': game_over
+            'game_over': game_over,
+            'remaining_rows': range(6 - len(guesses))
         })
     return render(request, 'wordle/index.html', {
         'message': '난이도 Milk T 단어장을 선택해 주세요.',
@@ -163,5 +176,6 @@ def index(request):
         'attempts': attempts,
         'guesses': guesses,
         'letter_status': letter_status,
-        'game_over': game_over
+        'game_over': game_over,
+        'remaining_rows': range(6 - len(guesses))
     })
