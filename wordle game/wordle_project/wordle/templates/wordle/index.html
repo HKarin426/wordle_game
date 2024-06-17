@@ -8,10 +8,10 @@
             font-family: Arial, sans-serif;
             margin: 50px;
             transition: background-color 0.3s, color 0.3s;
-            display: flex; /* 요소들을 수평 정렬하기 위해 Flexbox 레이아웃 사용 */
-            flex-direction: column; /* 요소들을 세로로 배열 */
-            align-items: center; /* 가로 정렬을 중앙으로 설정 */
-            justify-content: center; /* 세로 정렬을 중앙으로 설정 */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
         body.light-mode {
             background-color: white;
@@ -23,6 +23,7 @@
         }
         h1 {
             color: inherit;
+            font-size: 36px;
         }
         p {
             font-size: 18px;
@@ -49,25 +50,20 @@
         .feedback {
             font-size: 20px;
             margin-top: 20px;
+            text-align: center;
         }
         .explanation {
             font-size: 16px;
             margin-top: 10px;
         }
-        .guess-list {
-            margin-top: 20px;
-        }
-        .guess-item {
-            font-size: 18px;
-        }
         .correct {
             background-color: rgb(0, 204, 0);
             color: white;
             display: inline-block;
-            width: 30px;
-            height: 30px;
+            width: 50px;
+            height: 50px;
             text-align: center;
-            line-height: 30px;
+            line-height: 50px;
             margin: 2px;
             border-radius: 5px;
         }
@@ -75,10 +71,10 @@
             background-color: rgb(252, 213, 63);
             color: black;
             display: inline-block;
-            width: 30px;
-            height: 30px;
+            width: 50px;
+            height: 50px;
             text-align: center;
-            line-height: 30px;
+            line-height: 50px;
             margin: 2px;
             border-radius: 5px;
         }
@@ -86,10 +82,10 @@
             background-color: rgb(0, 0, 0);
             color: white;
             display: inline-block;
-            width: 30px;
-            height: 30px;
+            width: 50px;
+            height: 50px;
             text-align: center;
-            line-height: 30px;
+            line-height: 50px;
             margin: 2px;
             border-radius: 5px;
         }
@@ -97,10 +93,10 @@
             background-color: white;
             color: black;
             display: inline-block;
-            width: 30px;
-            height: 30px;
+            width: 50px;
+            height: 50px;
             text-align: center;
-            line-height: 30px;
+            line-height: 50px;
             margin: 2px;
             border-radius: 5px;
             border: 1px solid black;
@@ -112,14 +108,16 @@
             right: 10px;
             padding: 10px;
             cursor: pointer;
-            background-color: #4CAF50;
-            color: white;
+            background-color: #000000;
+            color: rgb(255, 255, 255);
             border: none;
             font-size: 16px;
             border-radius: 5px;
         }
         .remaining-letters {
             margin-top: 20px;
+            font-size: 32px;
+            text-align: center;
         }
         .inline-item {
             display: inline-block;
@@ -127,64 +125,208 @@
 
         .button-container {
             display: flex;
-            flex-direction: row;
+            align-items: center;
+            margin-bottom: 20px;
+            justify-content: center;
         }
 
-        /* @import url('https://fonts.googleapis.com/icon?family=Material+Icons'); */
-
-        .dropdown{
-        position : relative;
-        display : inline-block;
+        .dropdown {
+            position: relative;
+            display: inline-block;
         }
-
-        .dropbtn_icon{
-        font-family : 'Material Icons';
+        .dropbtn_icon {
+            font-family: 'Material Icons';
         }
-        .dropbtn{
-        border : 1px solid rgb(37, 37, 37);
-        border-radius : 4px;
-        background-color: #f5f5f5;
-        font-weight: 400;
-        color : rgb(37, 37, 37);
-        padding : 12px;
-        width :200px;
-        text-align: left;
-        cursor : pointer;
-        font-size : 12px;
+        .dropbtn {
+            border: 1px solid rgb(37, 37, 37);
+            border-radius: 4px;
+            background-color: #f5f5f5;
+            font-weight: 400;
+            color: rgb(37, 37, 37);
+            padding: 12px;
+            width: 200px;
+            text-align: left;
+            cursor: pointer;
+            font-size: 12px;
         }
-        .dropdown-content{
-        display : none;
-        position : absolute;
-        z-index : 1; /*다른 요소들보다 앞에 배치*/
-        font-weight: 400;
-        background-color: #f9f9f9;
-        min-width : 200px;
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            z-index: 1;
+            font-weight: 400;
+            background-color: #f9f9f9;
+            min-width: 200px;
         }
-
-        .dropdown-content a{
-        display : block;
-        text-decoration : none;
-        color : rgb(37, 37, 37);
-        font-size: 12px;
-        padding : 12px 20px;
+        .dropdown-content a {
+            display: block;
+            text-decoration: none;
+            color: rgb(37, 37, 37);
+            font-size: 12px;
+            padding: 12px 20px;
         }
-
-        .dropdown-content a:hover{
-        background-color : #ececec
+        .dropdown-content a:hover {
+            background-color: #ececec;
         }
-
         .dropdown:hover .dropdown-content {
-        display: block;
+            display: block;
         }
-        </style>
+        .game-instructions-button {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            background-color: #1f35f8;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 16px;
+        }
 
-   
+        .game-instructions-button:hover {
+            background-color: #0300a5;
+        }
 
+        .reset-button {
+            padding: 10px 20px;
+            font-size: 18px;
+            background-color: #f32e20;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .reset-button:hover {
+            background-color: #c01a1a;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .overlay-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 600px;
+            width: 80%;
+            text-align: center;
+        }
+
+        .close-button {
+            background-color: #f44336;
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+
+        .close-button:hover {
+            background-color: #d32f2f;
+        }
+
+        .grid-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .row {
+            display: flex;
+        }
+
+        .cell {
+            width: 50px;
+            height: 50px;
+            border: 2px solid #d3d3d3;
+            margin: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                margin: 20px;
+            }
+            h1 {
+                font-size: 24px;
+            }
+            p {
+                font-size: 16px;
+            }
+            input[type="text"] {
+                width: 100%;
+                font-size: 16px;
+            }
+            button {
+                font-size: 16px;
+                padding: 10px;
+            }
+            .feedback {
+                font-size: 18px;
+            }
+            .correct, .partial, .wrong, .unused {
+                width: 40px;
+                height: 40px;
+                line-height: 40px;
+                font-size: 18px;
+            }
+            .remaining-letters {
+                font-size: 24px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                margin: 10px;
+            }
+            h1 {
+                font-size: 20px;
+            }
+            p {
+                font-size: 14px;
+            }
+            input[type="text"] {
+                font-size: 14px;
+            }
+            button {
+                font-size: 14px;
+                padding: 8px;
+            }
+            .feedback {
+                font-size: 16px;
+            }
+            .correct, .partial, .wrong, .unused {
+                width: 30px;
+                height: 30px;
+                line-height: 30px;
+                font-size: 14px;
+            }
+            .remaining-letters {
+                font-size: 20px;
+            }
+        }
+    </style>
 </head>
 <body class="light-mode">
     <h1>Wordle Game</h1>
     
-    <br><br><br>
     <div class="dropdown">
         <button class="dropbtn">
           <span class="dropbtn_icon">난이도</span>
@@ -198,7 +340,7 @@
                 <a onclick="document.getElementById('file_name').value='fly_1'; this.closest('form').submit();">fly 1</a>
                 <a onclick="document.getElementById('file_name').value='fly_2'; this.closest('form').submit();">fly 2</a>
                 <a onclick="document.getElementById('file_name').value='jump_1'; this.closest('form').submit();">jump 1</a>
-                <a onclick="document.getElementById('file_name').value='jump_2'; this.closest('form').submit();">jump 2</a>
+                <a onclick="document.getElementId('file_name').value='jump_2'; this.closest('form').submit();">jump 2</a>
                 <a onclick="document.getElementById('file_name').value='master_1'; this.closest('form').submit();">master 1</a>
                 <a onclick="document.getElementById('file_name').value='master_2'; this.closest('form').submit();">master 2</a>
                 <a onclick="document.getElementById('file_name').value='run'; this.closest('form').submit();">run</a>
@@ -208,54 +350,78 @@
             </form>
         </div>
     </div>
-      
-    <br><br><br>
-    <p>남은 시도: {{ attempts }}</p>
-    {% if not game_over %}
-    <form method="post">
-        {% csrf_token %}
-        <input type="text" id="guess-input" name="guess" maxlength="5" required>
-        <button type="submit" name="submit">시도하기</button>
-    </form>
-    {% endif %}
-    <form method="post">
-        {% csrf_token %}
-        <button type="submit" name="reset">다시하기</button>
-    </form>
-    <div class="explanation">
-        <div class="inline-item">
-            <p>🟢 : 위치와 문자가 모두 일치</p>
-            <p>🟡 : 문자는 일치하나 위치가 다름</p>
-        </div>
-        <div class="inline-item">
-            <p>⚫ : 문자가 일치하지 않음</p>
-            <p>⬜ : 아직 입력해보지 않은 알파벳</p>
-        </div>
-    </div>
+
+    <button class="game-instructions-button" onclick="toggleOverlay()">게임방법</button>
     
-    <div class="guess-list">
-        {% for guess in guesses %}
-            <p class="guess-item">{{ guess.feedback|safe }}</p>
-        {% endfor %}
-    </div>
     <p class="feedback">{{ message }}</p>
 
+    <p>남은 시도: {{ attempts }}</p>
+    <div class="button-container">
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" name="reset" class="reset-button">다시하기</button>
+        </form>&nbsp;&nbsp;
+        {% if not game_over %}
+        <form method="post">
+            {% csrf_token %}
+            <input type="text" id="guess-input" name="guess" maxlength="5" required>
+            &nbsp;
+            <button type="submit" name="submit">시도하기</button>
+        </form>
+        {% endif %}
+    </div>
+    
+    <div class="grid-container">
+        {% for guess in guesses %}
+        <div class="row">
+            {% for feedback in guess.feedback %}
+            <div class="cell {{ feedback.status }}">{{ feedback.char }}</div>
+            {% endfor %}
+        </div>
+        {% endfor %}
+        {% for i in remaining_rows %}
+        <div class="row">
+            <div class="cell"></div>
+            <div class="cell"></div>
+            <div class="cell"></div>
+            <div class="cell"></div>
+            <div class="cell"></div>
+        </div>
+        {% endfor %}
+    </div>
+    
     <div class="remaining-letters">
         {% for letter, status in letter_status.items %}
             <span class="{{ status }}" onclick="addLetter('{{ letter }}')">{{ letter }}</span>
             {% if forloop.counter == 10 or forloop.counter == 19 %}<br>{% endif %}
             {% if forloop.counter == 10 %}
-                &nbsp;&nbsp;&nbsp;&nbsp;
+                
             {% endif %}
             {% if forloop.counter == 19 %}
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            
             {% endif %}
         {% endfor %}
         <span class="unused" onclick="deleteLetter()">⌫</span>
     </div>
-    
 
     <button class="theme-toggle" onclick="toggleTheme()">테마 변경</button>
+
+    <div class="overlay" id="overlay">
+        <div class="overlay-content">
+            <h2>게임 방법</h2>
+            <p>Wordle Game의 목표는 6번의 시도 안에 5글자 영단어를 맞추는 것입니다.</p>
+            <p>각 시도마다 아래와 같은 색으로 키보드에 피드백이 제공됩니다.</p>
+            <div class="inline-item">
+                <p>🟢 : 위치와 문자가 모두 일치</p>
+                <p>🟡 : 문자는 일치하나 위치가 다름</p>
+            </div>
+            <div class="inline-item">
+                <p>⚫ : 문자가 일치하지 않음</p>
+                <p>⬜ : 아직 입력해보지 않은 알파벳</p>
+            </div>
+            <button class="close-button" onclick="toggleOverlay()">닫기</button>
+        </div>
+    </div>
 
     <script>
         function toggleTheme() {
@@ -274,7 +440,6 @@
 
         function addLetter(letter) {
             const input = document.getElementById('guess-input');
-            // #@! test 5글자 기준을 최대 14글자
             if (input.value.length < 5) {    
                 input.value += letter;
             }
@@ -284,27 +449,11 @@
             const input = document.getElementById('guess-input');
             input.value = input.value.slice(0, -1);
         }
-        // xhr.open('GET', '?file_name=' + file_name, true);  // Django URL 패턴에 맞게 설정
-            
 
-        function loadFile(file_name) {
-            var xhr = new XMLHttpRequest();
-            xhr.open('GET', '/load_excel/?file_name=' + file_name, true);
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState == 4 && xhr.status == 200) {
-                    var response = JSON.parse(xhr.responseText);
-                    if (response.data_list) {
-                        alert('단어 리스트가 성공적으로 로드되었습니다.');
-                        // 단어 리스트를 게임에 반영하는 로직을 추가해야 합니다.
-                        // 예를 들어, 서버로부터 새로운 단어 리스트를 받아와 게임을 초기화합니다.
-                    } else {
-                        alert('단어 리스트를 로드하는 중 오류가 발생했습니다.');
-                    }
-                }
-            };
-            xhr.send();
+        function toggleOverlay() {
+            const overlay = document.getElementById('overlay');
+            overlay.style.display = (overlay.style.display === 'flex') ? 'none' : 'flex';
         }
-
     </script>
 </body>
 </html>
