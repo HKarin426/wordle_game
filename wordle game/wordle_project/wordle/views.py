@@ -40,7 +40,7 @@ def index(request):
         if 'load_file' in request.POST:
             file_name = request.POST['file_name']
             word_list = load_excel(file_name)
-            message : f'밀크T {file_name} 단어장을 선택 하셨습니다.'
+            message : f'밀크T 초등 {file_name} 단어장을 선택 하셨습니다.'
             
             if isinstance(word_list, str):  # Error message returned
                 return render(request, 'wordle/index.html', {
@@ -56,7 +56,7 @@ def index(request):
             guesses = []
             letter_status = {letter: 'unused' for letter in remaining_letters}
             game_over = False
-            message = f'밀크T {file_name} 단어장을 선택 하셨습니다.'
+            message = f'밀크T 초등 {file_name} 단어장을 선택 하셨습니다.'
             return render(request, 'wordle/index.html', {
                 'message': message,
                 'remaining_letters': remaining_letters,
