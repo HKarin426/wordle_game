@@ -6,12 +6,8 @@ from django.shortcuts import render, redirect
 
 # 엑셀 파일에서 단어 리스트를 로드하는 함수
 def load_excel_from_github(file_name):
-<<<<<<< HEAD
     url = f'https://github.com/HKarin426/wordle_game/raw/2b66cbdef4057a2c57e352aef2c83888340a0b8e/wordle%20game/wordle_project/word/{file_name}.xlsx'
     
-=======
-    url = f'https://github.com/HKarin426/wordle_game/raw/e22e496de3c084505fa58ebcfd3890aab83a0a9e/wordle%20game/wordle_project/word/{file_name}.xlsx'
->>>>>>> 현강
     try:
         df = pd.read_excel(url, engine='openpyxl', header=None)
         data_list = df.values.flatten().tolist()
