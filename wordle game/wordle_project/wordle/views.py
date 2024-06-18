@@ -29,7 +29,7 @@ attempts = 6  # 시도 횟수
 guesses = []  # 사용자의 추측 기록
 game_over = False  # 게임 종료 상태
 letter_status = {letter: 'unused' for letter in remaining_letters}  # 각 알파벳의 상태
-difficulty_selected = False  # 난이도 선택 상태
+difficulty_selected = False  # 단어장 선택 상태
 
 def index(request):
     global remaining_letters, answer, attempts, guesses, game_over, letter_status, word_list, difficulty_selected
