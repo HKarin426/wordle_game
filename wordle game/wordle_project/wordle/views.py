@@ -6,7 +6,8 @@ from django.shortcuts import render, redirect
 
 # 엑셀 파일에서 단어 리스트를 로드하는 함수
 def load_excel_from_github(file_name):
-    url = f'https://github.com/HKarin426/wordle_game/raw/e22e496de3c084505fa58ebcfd3890aab83a0a9e/wordle%20game/wordle_project/word/{file_name}.xlsx'
+    url = f'https://github.com/HKarin426/wordle_game/raw/2b66cbdef4057a2c57e352aef2c83888340a0b8e/wordle%20game/wordle_project/word/{file_name}.xlsx'
+    
     try:
         df = pd.read_excel(url, engine='openpyxl', header=None)
         data_list = df.values.flatten().tolist()
@@ -162,7 +163,7 @@ def index(request):
             answer = random.choice(word_list)
 
         return render(request, 'wordle/index.html', {
-            'message': '난이도 Milk T 단어장을 선택해 주세요.',
+            'message': '단어 목록: 원하는 밀크 T 초등 단어장을 선택해 주세요.',
             'remaining_letters': remaining_letters,
             'attempts': attempts,
             'guesses': guesses,
@@ -171,7 +172,7 @@ def index(request):
             'remaining_rows': range(6 - len(guesses))
         })
     return render(request, 'wordle/index.html', {
-        'message': '난이도 Milk T 단어장을 선택해 주세요.',
+        'message': '단어 목록: 원하는 밀크 T 초등 단어장을 선택해 주세요.',
         'remaining_letters': remaining_letters,
         'attempts': attempts,
         'guesses': guesses,
