@@ -8,7 +8,7 @@ from django.shortcuts import render, redirect
 
 # 엑셀 파일에서 단어 리스트를 로드하는 함수에 대한 설명
 def load_excel(file_name):
-    file_path = r'C:\Users\USER\Documents\wordle_game-1\wordle game\wordle_project\word\{}.xlsx'.format(file_name)
+    file_path = r'D:\Git_Project_s20240610\wordle_game\wordle_game\wordle game\wordle_project\word\{}.xlsx'.format(file_name)
     
     try:
         df = pd.read_excel(file_path, engine='openpyxl', header=None)
