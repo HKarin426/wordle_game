@@ -343,7 +343,7 @@
                 <a onclick="document.getElementById('file_name').value='fly_1'; this.closest('form').submit();">fly 1</a>
                 <a onclick="document.getElementById('file_name').value='fly_2'; this.closest('form').submit();">fly 2</a>
                 <a onclick="document.getElementById('file_name').value='jump_1'; this.closest('form').submit();">jump 1</a>
-                <a onclick="document.getElementId('file_name').value='jump_2'; this.closest('form').submit();">jump 2</a>
+                <a onclick="document.getElementById('file_name').value='jump_2'; this.closest('form').submit();">jump 2</a>
                 <a onclick="document.getElementById('file_name').value='master_1'; this.closest('form').submit();">master 1</a>
                 <a onclick="document.getElementById('file_name').value='master_2'; this.closest('form').submit();">master 2</a>
                 <a onclick="document.getElementById('file_name').value='run'; this.closest('form').submit();">run</a>
@@ -397,12 +397,6 @@
         {% for letter, status in letter_status.items %}
             <span class="{{ status }}" onclick="addLetter('{{ letter }}')">{{ letter }}</span>
             {% if forloop.counter == 10 or forloop.counter == 19 %}<br>{% endif %}
-            {% if forloop.counter == 10 %}
-                
-            {% endif %}
-            {% if forloop.counter == 19 %}
-            
-            {% endif %}
         {% endfor %}
         <span class="unused" onclick="deleteLetter()">⌫</span>
     </div>
