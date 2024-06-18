@@ -6,14 +6,10 @@ from django.shortcuts import render, redirect
 
 # 엑셀 파일에서 단어 리스트를 로드하는 함수
 def load_excel_from_github(file_name):
-    url = f'https://github.com/HKarin426/wordle_game/raw/2b66cbdef4057a2c57e352aef2c83888340a0b8e/wordle%20game/wordle_project/word/{file_name}.xlsx'
-    
-    try:
-        df = pd.read_excel(url, engine='openpyxl', header=None)
-        data_list = df.values.flatten().tolist()
-        return data_list
-    except Exception as e:
-        return str(e)
+    file_path = f'C:\Users\USER\Documents\word\{file_name}.xlsx'
+    df = pd.read_excel(file_path, engine='openpyxl', header=None)
+    data_list = df.values.flatten().tolist()
+    return data_list
 
 # 단어가 유효한지 검사하는 함수
 def is_valid_word(word):
