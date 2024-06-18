@@ -5,13 +5,12 @@ import pandas as pd
 from django.shortcuts import render, redirect
 
 # 엑셀 파일에서 단어 리스트를 로드하는 함수
-def load_excel_from_github(file_name):
-    url = f'https://github.com/HKarin426/wordle_game/raw/2b66cbdef4057a2c57e352aef2c83888340a0b8e/wordle%20game/wordle_project/word/{file_name}.xlsx'
-    
+def load_excel(file_name):
+    file_path = f'C:/Users/USER/Documents/word/{file_name}.xlsx'  # 로컬 폴더에서 데이터 로드
     try:
-        df = pd.read_excel(url, engine='openpyxl', header=None)
-        data_list = df.values.flatten().tolist()
-        return data_list
+        df = pd.read_excel(file_path, engine='openpyxl', header=None)
+        word_list = df.values.flatten().tolist()
+        return word_list
     except Exception as e:
         return str(e)
 
@@ -22,8 +21,8 @@ def is_valid_word(word):
     return response.status_code == 200
 
 # 글로벌 변수 설정
-qwerty = ['q','w','e','r','t','y','u','i','o','p','a','s','d','f','g','h','j','k','l','z','x','c','v','b','n','m']
-remaining_letters = qwerty
+qwerty = list('qwertyuiopasdfghjklzxcvbnm')
+remaining_letters = qwerty.copy()
 word_list = []
 answer = ""
 attempts = 6
@@ -38,20 +37,22 @@ def index(request):
     if request.method == 'POST':
         if 'load_file' in request.POST:
             file_name = request.POST['file_name']
-            word_list = load_excel_from_github(file_name)
+            word_list = load_excel(file_name)
             message = f'밀크T 초등 {file_name} 단어장을 선택 하셨습니다.'
-            
+
             if isinstance(word_list, str):  # Error message returned
                 return render(request, 'wordle/index.html', {
                     'error_message': word_list,
                 })
                 
             if not word_list:
-                return render(request, 'wordle/index.html', {'error_message': '파일이 비어있거나 잘못된 형식입니다.'})
+                return render(request, 'wordle/index.html', {
+                    'error_message': '파일이 비어있거나 잘못된 형식입니다.',
+                })
             
             answer = random.choice(word_list)
             attempts = 6
-            remaining_letters = qwerty
+            remaining_letters = qwerty.copy()
             guesses = []
             letter_status = {letter: 'unused' for letter in remaining_letters}
             game_over = False
@@ -63,7 +64,7 @@ def index(request):
                 'guesses': guesses,
                 'letter_status': letter_status,
                 'game_over': game_over,
-                'remaining_rows': range(6 - len(guesses))
+                'remaining_rows': range(6 - len(guesses)),
             })
         
         if 'guess' in request.POST and not game_over:
@@ -75,7 +76,7 @@ def index(request):
                     'guesses': guesses,
                     'game_over': game_over,
                     'letter_status': letter_status,
-                    'remaining_rows': range(6 - len(guesses))
+                    'remaining_rows': range(6 - len(guesses)),
                 })
 
             guess = request.POST['guess'].lower()
@@ -88,7 +89,7 @@ def index(request):
                     'guesses': guesses,
                     'game_over': game_over,
                     'letter_status': letter_status,
-                    'remaining_rows': range(6 - len(guesses))
+                    'remaining_rows': range(6 - len(guesses)),
                 })
 
             if not is_valid_word(guess) and guess not in word_list:
@@ -99,7 +100,7 @@ def index(request):
                     'guesses': guesses,
                     'game_over': game_over,
                     'letter_status': letter_status,
-                    'remaining_rows': range(6 - len(guesses))
+                    'remaining_rows': range(6 - len(guesses)),
                 })
 
             if guess == answer:
@@ -113,7 +114,7 @@ def index(request):
                     'guesses': guesses,
                     'game_over': game_over,
                     'letter_status': letter_status,
-                    'remaining_rows': range(6 - len(guesses))
+                    'remaining_rows': range(6 - len(guesses)),
                 })
             else:
                 feedback = []
@@ -136,7 +137,7 @@ def index(request):
                 guesses.append({'guess': guess, 'feedback': feedback})
                 if attempts == 0:
                     message = f"아쉽지만 모든 시도 횟수를 소진하셨습니다. 정답은 {answer} 입니다."
-                    game_over = True  # 시도 횟수를 초기화하지 않음
+                    game_over = True
                 else:
                     message = ""
 
@@ -147,13 +148,13 @@ def index(request):
                     'guesses': guesses,
                     'letter_status': letter_status,
                     'game_over': game_over,
-                    'remaining_rows': range(6 - len(guesses))
+                    'remaining_rows': range(6 - len(guesses)),
                 })
 
         elif 'reset' in request.POST:
             answer = random.choice(word_list)
             attempts = 6
-            remaining_letters = qwerty
+            remaining_letters = qwerty.copy()
             guesses = []
             letter_status = {letter: 'unused' for letter in remaining_letters}
             game_over = False
@@ -163,20 +164,21 @@ def index(request):
             answer = random.choice(word_list)
 
         return render(request, 'wordle/index.html', {
-            'message': '난이도 Milk T 단어장을 선택해 주세요.',
+            'message': '게임 시작 전, 게임방법을 읽어주세요.',
             'remaining_letters': remaining_letters,
             'attempts': attempts,
             'guesses': guesses,
             'letter_status': letter_status,
             'game_over': game_over,
-            'remaining_rows': range(6 - len(guesses))
+            'remaining_rows': range(6 - len(guesses)),
         })
+
     return render(request, 'wordle/index.html', {
-        'message': '난이도 Milk T 단어장을 선택해 주세요.',
+        'message': '게임 시작 전, 게임방법을 읽어주세요.',
         'remaining_letters': remaining_letters,
         'attempts': attempts,
         'guesses': guesses,
         'letter_status': letter_status,
         'game_over': game_over,
-        'remaining_rows': range(6 - len(guesses))
+        'remaining_rows': range(6 - len(guesses)),
     })

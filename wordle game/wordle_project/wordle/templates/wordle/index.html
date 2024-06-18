@@ -19,7 +19,10 @@
         }
         body.dark-mode {
             background-color: #636363;
-            color: white;
+            color: rgb(255, 255, 255);
+        }
+        body.dark-mode .overlay-content {
+            color: black;
         }
         h1 {
             color: inherit;
@@ -325,12 +328,12 @@
     </style>
 </head>
 <body class="light-mode">
-    <h1>Wordle Game</h1>
+    <h1>밀크 T Wordle Game</h1>
     
     <div class="dropdown">
         <button class="dropbtn">
-          <span class="dropbtn_icon">난이도</span>
-          Milk T
+          <span class="dropbtn_icon"></span>
+          밀크 T 초등 쏙쏙 Words 단어장
         </button>
         <div class="dropdown-content">
             <form method="post">
@@ -340,7 +343,7 @@
                 <a onclick="document.getElementById('file_name').value='fly_1'; this.closest('form').submit();">fly 1</a>
                 <a onclick="document.getElementById('file_name').value='fly_2'; this.closest('form').submit();">fly 2</a>
                 <a onclick="document.getElementById('file_name').value='jump_1'; this.closest('form').submit();">jump 1</a>
-                <a onclick="document.getElementId('file_name').value='jump_2'; this.closest('form').submit();">jump 2</a>
+                <a onclick="document.getElementById('file_name').value='jump_2'; this.closest('form').submit();">jump 2</a>
                 <a onclick="document.getElementById('file_name').value='master_1'; this.closest('form').submit();">master 1</a>
                 <a onclick="document.getElementById('file_name').value='master_2'; this.closest('form').submit();">master 2</a>
                 <a onclick="document.getElementById('file_name').value='run'; this.closest('form').submit();">run</a>
@@ -394,12 +397,6 @@
         {% for letter, status in letter_status.items %}
             <span class="{{ status }}" onclick="addLetter('{{ letter }}')">{{ letter }}</span>
             {% if forloop.counter == 10 or forloop.counter == 19 %}<br>{% endif %}
-            {% if forloop.counter == 10 %}
-                
-            {% endif %}
-            {% if forloop.counter == 19 %}
-            
-            {% endif %}
         {% endfor %}
         <span class="unused" onclick="deleteLetter()">⌫</span>
     </div>
@@ -408,6 +405,8 @@
 
     <div class="overlay" id="overlay">
         <div class="overlay-content">
+            <h2>게임 소개</h2>
+            밀크 T Wordle game은 밀크 T 초등 쏙쏙 Words 단어장을 기반으로 <br>학습자들이 게임을 통해 재미있게 영어 단어를 학습할 수 있도록 제작되었습니다.
             <h2>게임 방법</h2>
             <p>Wordle Game의 목표는 6번의 시도 안에 5글자 영단어를 맞추는 것입니다.</p>
             <p>각 시도마다 아래와 같은 색으로 키보드에 피드백이 제공됩니다.</p>
@@ -419,6 +418,9 @@
                 <p>⚫ : 문자가 일치하지 않음</p>
                 <p>⬜ : 아직 입력해보지 않은 알파벳</p>
             </div>
+            <p>게임 시작 전 원하는 단어장을 선택해주세요.</p>
+            <p>단어 목록은 밀크 T 초등 쏙쏙 Words의 단어장에서 
+                <br>5개의 알파벳만을 사용하는 단어들 입니다.</p>
             <button class="close-button" onclick="toggleOverlay()">닫기</button>
         </div>
     </div>
