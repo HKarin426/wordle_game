@@ -35,19 +35,23 @@ difficulty_selected = False
 def index(request):
     global remaining_letters, answer, attempts, guesses, game_over, letter_status, word_list, difficulty_selected
 
+
     if request.method == 'POST':
         if 'load_file' in request.POST:
             file_name = request.POST['file_name']
             word_list = load_excel_from_github(file_name)
             message = f'밀크T 초등 {file_name} 단어장을 선택 하셨습니다.'
-            
+
+
             if isinstance(word_list, str):  # Error message returned
                 return render(request, 'wordle/index.html', {
                     'error_message': word_list,
                 })
                 
             if not word_list:
-                return render(request, 'wordle/index.html', {'error_message': '파일이 비어있거나 잘못된 형식입니다.'})
+                return render(request, 'wordle/index.html', {
+                    'error_message': '파일이 비어있거나 잘못된 형식입니다.',
+                    })
             
             answer = random.choice(word_list)
             attempts = 6
@@ -63,7 +67,8 @@ def index(request):
                 'guesses': guesses,
                 'letter_status': letter_status,
                 'game_over': game_over,
-                'remaining_rows': range(6 - len(guesses))
+                'remaining_rows': range(6 - len(guesses)),
+
             })
         
         if 'guess' in request.POST and not game_over:
@@ -75,7 +80,8 @@ def index(request):
                     'guesses': guesses,
                     'game_over': game_over,
                     'letter_status': letter_status,
-                    'remaining_rows': range(6 - len(guesses))
+                    'remaining_rows': range(6 - len(guesses)),
+
                 })
 
             guess = request.POST['guess'].lower()
@@ -88,7 +94,8 @@ def index(request):
                     'guesses': guesses,
                     'game_over': game_over,
                     'letter_status': letter_status,
-                    'remaining_rows': range(6 - len(guesses))
+                    'remaining_rows': range(6 - len(guesses)),
+
                 })
 
             if not is_valid_word(guess) and guess not in word_list:
@@ -99,7 +106,8 @@ def index(request):
                     'guesses': guesses,
                     'game_over': game_over,
                     'letter_status': letter_status,
-                    'remaining_rows': range(6 - len(guesses))
+                    'remaining_rows': range(6 - len(guesses)),
+
                 })
 
             if guess == answer:
@@ -113,7 +121,8 @@ def index(request):
                     'guesses': guesses,
                     'game_over': game_over,
                     'letter_status': letter_status,
-                    'remaining_rows': range(6 - len(guesses))
+                    'remaining_rows': range(6 - len(guesses)),
+
                 })
             else:
                 feedback = []
@@ -147,7 +156,8 @@ def index(request):
                     'guesses': guesses,
                     'letter_status': letter_status,
                     'game_over': game_over,
-                    'remaining_rows': range(6 - len(guesses))
+                    'remaining_rows': range(6 - len(guesses)),
+
                 })
 
         elif 'reset' in request.POST:
@@ -163,20 +173,22 @@ def index(request):
             answer = random.choice(word_list)
 
         return render(request, 'wordle/index.html', {
-            'message': '단어 목록: 원하는 밀크 T 초등 단어장을 선택해 주세요.',
+            'message': '게임 시작 전, 게임방법을 읽어주세요.',
             'remaining_letters': remaining_letters,
             'attempts': attempts,
             'guesses': guesses,
             'letter_status': letter_status,
             'game_over': game_over,
-            'remaining_rows': range(6 - len(guesses))
+            'remaining_rows': range(6 - len(guesses)),
+
         })
     return render(request, 'wordle/index.html', {
-        'message': '단어 목록: 원하는 밀크 T 초등 단어장을 선택해 주세요.',
+        'message': '게임 시작 전, 게임방법을 읽어주세요.',
         'remaining_letters': remaining_letters,
         'attempts': attempts,
         'guesses': guesses,
         'letter_status': letter_status,
         'game_over': game_over,
-        'remaining_rows': range(6 - len(guesses))
+        'remaining_rows': range(6 - len(guesses)),
+
     })
