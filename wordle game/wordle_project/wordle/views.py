@@ -6,11 +6,13 @@ from django.shortcuts import render, redirect
 
 # 엑셀 파일에서 단어 리스트를 로드하는 함수
 def load_excel(file_name):
-    file_path = f'C:/Users/USER/Documents/word/{file_name}.xlsx'  # 로컬 폴더에서 데이터 로드 # word 폴더 다운받은 경로 입력
+    file_path = f'C:\\Users\\USER\\Documents\\wordle_game\\word(translate)\\{file_name}.xlsx'
+     # 로컬 폴더에서 데이터 로드 # word 폴더 다운받은 경로 입력
     
     try:
         df = pd.read_excel(file_path, engine='openpyxl', header=None)  # 엑셀 파일을 데이터프레임으로 로드
-        word_list = df.values.flatten().tolist()  # 데이터프레임을 리스트로 변환
+        word_list = df.values.tolist()  # 데이터프레임을 리스트로 변환
+        print("로드된 단어와 뜻:", word_list)  # 디버깅 로그
         return word_list
     except Exception as e:
         return str(e)  # 오류 발생 시 오류 메시지 반환
@@ -100,7 +102,7 @@ def index(request):
                     'remaining_rows': range(6 - len(guesses)),
                 })
             # 단어 검증에 실패했을 때
-            if not is_valid_word(guess) and guess not in word_list:
+            if not is_valid_word(guess) and guess not in [word[0] for word in word_list]:
                 return render(request, 'wordle/index.html', {
                     'message': '존재하지 않는 단어입니다.',
                     'remaining_letters': remaining_letters,
@@ -111,12 +113,12 @@ def index(request):
                     'remaining_rows': range(6 - len(guesses)),
                 })
             # 정답일 때
-            if guess == answer:
+            if guess == answer[0]:
                 feedback = [{'char': guess[i], 'status': 'correct'} for i in range(5)]
                 guesses.append({'guess': guess, 'feedback': feedback})
                 game_over = True
                 return render(request, 'wordle/index.html', {
-                    'message': f'축하합니다! 정답을 맞추셨습니다. 정답은 {guess} 입니다.',
+                    'message': f'축하합니다! 정답을 맞추셨습니다. 정답은 {guess} ({answer[1]}) 입니다.',
                     'remaining_letters': remaining_letters,
                     'attempts': attempts,
                     'guesses': guesses,
@@ -128,11 +130,11 @@ def index(request):
                 feedback = []
                 correct_letters = set()
                 for i in range(5):
-                    if guess[i] == answer[i]:
+                    if guess[i] == answer[0][i]:
                         feedback.append({'char': guess[i], 'status': 'correct'})
                         correct_letters.add(guess[i])
                         letter_status[guess[i]] = 'correct'
-                    elif guess[i] in answer:
+                    elif guess[i] in answer[0]:
                         feedback.append({'char': guess[i], 'status': 'partial'})
                         correct_letters.add(guess[i])
                         if letter_status[guess[i]] != 'correct':
@@ -144,7 +146,7 @@ def index(request):
                 attempts -= 1
                 guesses.append({'guess': guess, 'feedback': feedback})
                 if attempts == 0:
-                    message = f"아쉽지만 모든 시도 횟수를 소진하셨습니다. 정답은 {answer} 입니다."
+                    message = f"아쉽지만 모든 시도 횟수를 소진하셨습니다. 정답은 {answer[0]} ({answer[1]}) 입니다."
                     game_over = True
                 else:
                     message = ""
